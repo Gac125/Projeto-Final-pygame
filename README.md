@@ -1,6 +1,6 @@
 # Projeto-Final-pygame
 
-Giovanna Alves, Giulia Castro e Pedro Célia
+**Criadores:** Giovanna Alves, Giulia Castro e Pedro Célia
 
 **Próximos objetivos:**
 
