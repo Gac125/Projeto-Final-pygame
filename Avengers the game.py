@@ -114,7 +114,7 @@ class Bullet(pygame.sprite.Sprite):
         self.image = bullet_img
         
         # Deixando transparente.
-        self.image.set_colorkey(WHITE)
+        self.image.set_colorkey(BLACK)
         
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
@@ -140,7 +140,7 @@ def load_assets(img_dir):
     assets = {}
     assets["player_img"] = pygame.image.load(path.join(Homem, "Stance_Iron_Man.png")).convert()
     assets["mob_img"] = pygame.image.load(path.join(Thanos, "Stance_Thanos.png")).convert()
-    assets["bullet_img"] = pygame.image.load(path.join(Homem, "Propulsor.png")).convert()
+    assets["bullet_img"] = pygame.image.load(path.join(Homem, "Propulsor2.png")).convert()
     assets["background"] = pygame.image.load(path.join(fundo, 'houses31.png')).convert()
 #    assets["title"] = pygame.image.load(path.join(tela_I, 'Tela_inicio.png')).convert()
     return assets
