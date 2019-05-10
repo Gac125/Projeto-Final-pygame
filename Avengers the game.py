@@ -9,13 +9,13 @@ from os import path
 
 # Estabelece a pasta que contem as figuras e sons.
 img_dir = path.join(path.dirname(__file__), 'Avengers anime')
-fundo = path.join(path.dirname(__file__), 'Backgrounds')
+#fundo = path.join(path.dirname(__file__), 'Backgrounds')
 
 
 
 # Dados gerais do jogo.
-WIDTH = 1480 # Largura da tela
-HEIGHT = 700 # Altura da tela
+WIDTH = 1500 # Largura da tela
+HEIGHT = 800 # Altura da tela
 FPS = 60 # Frames por segundo
 
 # Define algumas variáveis com as cores básicas
@@ -25,6 +25,9 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
+
+
+
 
 class Player(pygame.sprite.Sprite):
     
@@ -52,18 +55,24 @@ class Player(pygame.sprite.Sprite):
         
         # Velocidade da nave
         self.speedx = 0
+        self.speedy = 0
         
         # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = 25
         
     def update(self):
         self.rect.x += self.speedx
+        self.rect.y += self.speedy
         
         # Mantem dentro da tela
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
         if self.rect.left < 0:
             self.rect.left = 0
+        if self.rect.up > HEIGHT :
+            self.rect.up = HEIGHT
+        if self.rect.down < 0:
+            self.rect.down = 0
             
 class Mob(pygame.sprite.Sprite):
     
@@ -127,11 +136,13 @@ def load_assets(img_dir):
     Homem = path.join(img_dir, 'Iron Man')
     Thanos = path.join(img_dir, 'Thanos')
     fundo = path.join(path.dirname(__file__), 'Backgrounds')
+#    tela_I = path.join(path.dirname(__file__), 'Backgrounds')
     assets = {}
     assets["player_img"] = pygame.image.load(path.join(Homem, "Stance_Iron_Man.png")).convert()
     assets["mob_img"] = pygame.image.load(path.join(Thanos, "Stance_Thanos.png")).convert()
     assets["bullet_img"] = pygame.image.load(path.join(Homem, "Propulsor.png")).convert()
     assets["background"] = pygame.image.load(path.join(fundo, 'City4.png')).convert()
+#    assets["title"] = pygame.image.load(path.join(tela_I, 'Tela_inicio.png')).convert()
     return assets
     
 pygame.init()
@@ -154,13 +165,13 @@ player = Player(assets["player_img"])
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
-# Cria um grupo só dos meteoros
+# Cria um grupo só dos thanos
 mobs = pygame.sprite.Group()
 
 # Cria um grupo para tiros
 bullets = pygame.sprite.Group()
 
-# Cria 8 meteoros e adiciona no grupo meteoros
+# Cria 8 meteoros e adiciona no grupo thanos
 for i in range(8):
     m = Mob(assets["mob_img"])
     all_sprites.add(m)
@@ -181,19 +192,23 @@ try:
                     player.speedx = -8
                 if event.key == pygame.K_RIGHT:
                     player.speedx = 8
+                if event.key == pygame.K_UP:
+                    player.speedy = -6
+                if event.key == pygame.K_DOWN:
+                    player.speedy = 6
                 if event.key == pygame.K_SPACE:
                     bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
                     all_sprites.add(bullet)
                     bullets.add(bullet)        
-#            if event.type == pygame.KEYUP:
-#                if event.key == pygame.K_LEFT:
-#                    player.speedx = 0
-#                if event.key == pygame.K_RIGHT:
-#                    player.speedx = 0
-#                if event.key == pygame.K_UP:
-#                    player.key = 0
-#                if event.key == pygame.K_DOWN:
-#                    player.key = 0
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT:
+                    player.speedx = 0
+                if event.key == pygame.K_RIGHT:
+                    player.speedx = 0
+                if event.key == pygame.K_UP:
+                    player.key = 0
+                if event.key == pygame.K_DOWN:
+                    player.key = 0
            
         all_sprites.update()
             
