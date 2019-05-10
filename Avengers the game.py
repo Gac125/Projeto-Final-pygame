@@ -14,8 +14,8 @@ img_dir = path.join(path.dirname(__file__), 'Avengers anime')
 
 
 # Dados gerais do jogo.
-WIDTH = 1500 # Largura da tela
-HEIGHT = 800 # Altura da tela
+WIDTH = 1000 # Largura da tela
+HEIGHT = 600 # Altura da tela
 FPS = 60 # Frames por segundo
 
 # Define algumas variáveis com as cores básicas
@@ -41,7 +41,7 @@ class Player(pygame.sprite.Sprite):
         self.image = player_img
         
         # Diminuindo o tamanho da imagem.
-        self.image = pygame.transform.scale(player_img, (300, 250))
+        self.image = pygame.transform.scale(player_img, (200,175))
         
         # Deixando transparente.
         self.image.set_colorkey(WHITE)
@@ -69,10 +69,10 @@ class Player(pygame.sprite.Sprite):
             self.rect.right = WIDTH
         if self.rect.left < 0:
             self.rect.left = 0
-        if self.rect.up > HEIGHT :
-            self.rect.up = HEIGHT
-        if self.rect.down < 0:
-            self.rect.down = 0
+        if self.rect.top > HEIGHT :
+            self.rect.top = HEIGHT
+        if self.rect.bottom < HEIGHT:
+            self.rect.bottom = HEIGHT
             
 class Mob(pygame.sprite.Sprite):
     
@@ -141,7 +141,7 @@ def load_assets(img_dir):
     assets["player_img"] = pygame.image.load(path.join(Homem, "Stance_Iron_Man.png")).convert()
     assets["mob_img"] = pygame.image.load(path.join(Thanos, "Stance_Thanos.png")).convert()
     assets["bullet_img"] = pygame.image.load(path.join(Homem, "Propulsor.png")).convert()
-    assets["background"] = pygame.image.load(path.join(fundo, 'City4.png')).convert()
+    assets["background"] = pygame.image.load(path.join(fundo, 'houses31.png')).convert()
 #    assets["title"] = pygame.image.load(path.join(tela_I, 'Tela_inicio.png')).convert()
     return assets
     
