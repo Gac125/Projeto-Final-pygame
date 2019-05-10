@@ -85,8 +85,9 @@ class Mob(pygame.sprite.Sprite):
         # Diminuindo o tamanho da imagem.
         self.image = pygame.transform.scale(mob_img, (50, 38))
         
+        
         # Deixando transparente.
-        self.image.set_colorkey(BLACK)
+        self.image.set_colorkey(WHITE)
         
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
@@ -99,8 +100,21 @@ class Mob(pygame.sprite.Sprite):
         self.speedx = random.randrange(-3, 3)
         self.speedy = random.randrange(2, 9)
         
+       
+        
         # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = int(self.rect.width * .85 / 2)
+        
+    def update(self):
+        self.rect.x += self.speedx
+        self.rect.y += self.speedy
+        
+        # Se o meteoro passar do final da tela, volta para cima
+        if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 20:
+            self.rect.x = random.randrange(WIDTH - self.rect.width)
+            self.rect.y = random.randrange(-100, -40)
+            self.speedx = random.randrange(-3, 3)
+            self.speedy = random.randrange(2, 9)
         
 class Bullet(pygame.sprite.Sprite):
     
@@ -120,13 +134,13 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         
         # Coloca no lugar inicial definido em x, y do constutor
-        self.rect.bottom = y
+        self.rect.bottom = y+60
         self.rect.centerx = x
-        self.speedy = -10
+        self.speedx = 10
 
     
     def update(self):
-        self.rect.y += self.speedy
+        self.rect.x += self.speedx
         
         # Se o tiro passar do inicio da tela, morre.
         if self.rect.bottom < 0:
@@ -193,9 +207,9 @@ try:
                 if event.key == pygame.K_RIGHT:
                     player.speedx = 8
                 if event.key == pygame.K_UP:
-                    player.speedy = -6
+                    player.speedy = -50
                 if event.key == pygame.K_DOWN:
-                    player.speedy = 6
+                    player.speedy = 50
                 if event.key == pygame.K_SPACE:
                     bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
                     all_sprites.add(bullet)
@@ -224,10 +238,10 @@ try:
         hits = pygame.sprite.spritecollide(player, mobs, False, pygame.sprite.collide_circle)
         if hits:
             # Toca o som da colisão
-            time.sleep(1) # Precisa esperar senão fecha
-            
-            running = False
-    
+           time.sleep(1) # Precisa esperar senão fecha
+           
+           running = False
+   
         # A cada loop, redesenha o fundo e os sprites
         screen.fill(BLACK)
         screen.blit(background, background_rect)
