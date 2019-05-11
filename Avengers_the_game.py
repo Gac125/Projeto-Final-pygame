@@ -11,8 +11,6 @@ from os import path
 img_dir = path.join(path.dirname(__file__), 'Avengers anime')
 #fundo = path.join(path.dirname(__file__), 'Backgrounds')
 
-
-
 # Dados gerais do jogo.
 WIDTH = 1000 # Largura da tela
 HEIGHT = 600 # Altura da tela
@@ -27,134 +25,97 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
 
-
-
 class Player(pygame.sprite.Sprite):
-    
     # Construtor da classe.
-    def __init__(self, player_img, manager):
-        
+    def __init__(self, player_img, manager):     
         # Construtor da classe pai (Sprite).
-        pygame.sprite.Sprite.__init__(self)
-        
+        pygame.sprite.Sprite.__init__(self) 
         # Carregando a imagem de fundo.
         self.image = player_img
-        
         self.manager = manager
-        
         # Diminuindo o tamanho da imagem.
         self.image = pygame.transform.scale(player_img, (200,175))
-        
         # Deixando transparente.
         self.image.set_colorkey(WHITE)
-        
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
-        
         # Centraliza embaixo da tela.
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
-        
         # Velocidade da nave
         self.speedx = 0
         self.speedy = 0
-        
         # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = 25
-        
     def update(self):
         self.manager.px += self.speedx
         self.manager.py += self.speedy
-        
-#        # Mantem dentro da tela
-#        if self.rect.right > WIDTH:
-#            self.rect.right = WIDTH
-#        if self.rect.left < 0:
-#            self.rect.left = 0
-#        if self.rect.top > HEIGHT :
-#            self.rect.top = HEIGHT
-#        if self.rect.bottom < HEIGHT:
-#            self.rect.bottom = HEIGHT
+        # Mantem dentro da tela
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTH
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.top > HEIGHT :
+            self.rect.top = HEIGHT
+        if self.rect.bottom < HEIGHT:
+            self.rect.bottom = HEIGHT
             
-class Mob(pygame.sprite.Sprite):
-    
+class Mob(pygame.sprite.Sprite): 
     # Construtor da classe.
-    def __init__(self, mob_img, manager):
-        
+    def __init__(self, mob_img, manager):      
         # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self)
-
-        self.manager = manager
-        
+        self.manager = manager       
         # Diminuindo o tamanho da imagem.
-        self.image = pygame.transform.scale(mob_img, (50, 38))
-        
-        
+        self.image = pygame.transform.scale(mob_img, (50, 38))                
         # Deixando transparente.
-        self.image.set_colorkey(WHITE)
-        
+        self.image.set_colorkey(WHITE)       
         # Sorteia uma velocidade inicial
         self.speedx = random.randrange(-3, 3)
-        self.speedy = random.randrange(2, 9)
-        
+        self.speedy = random.randrange(2, 9)       
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
-
         # Sorteia um lugar inicial em x
         self.px = random.randrange(WIDTH - self.rect.width)
         # Sorteia um lugar inicial em y
-        self.py = random.randrange(-100, -40)
-        
+        self.py = random.randrange(-100, -40)       
         self.rect.x = self.px - self.manager.px
-        self.rect.y = self.py - self.manager.py
-                
+        self.rect.y = self.py - self.manager.py               
         # Melhora a colisão estabelecendo um raio de um circulo
-        self.radius = int(self.rect.width * .85 / 2)
-        
+        self.radius = int(self.rect.width * .85 / 2)    
     def update(self):
         self.px += self.speedx
-        self.py += self.speedy
-        
+        self.py += self.speedy    
         self.rect.x = self.px - self.manager.px
-        self.rect.y = self.py - self.manager.py
-                
+        self.rect.y = self.py - self.manager.py             
         # Se o meteoro passar do final da tela, volta para cima
         if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 20:
             self.rect.x = random.randrange(WIDTH - self.rect.width)
             self.rect.y = random.randrange(-100, -40)
             self.speedx = random.randrange(-3, 3)
             self.speedy = random.randrange(2, 9)
-        
+      
 class Bullet(pygame.sprite.Sprite):
-    
     # Construtor da classe.
-    def __init__(self, x, y, bullet_img):
-        
+    def __init__(self, x, y, bullet_img):    
         # Construtor da classe pai (Sprite).
-        pygame.sprite.Sprite.__init__(self)
-        
+        pygame.sprite.Sprite.__init__(self)      
         # Carregando a imagem de fundo.
-        self.image = bullet_img
-        
+        self.image = bullet_img    
         # Deixando transparente.
-        self.image.set_colorkey(BLACK)
-        
+        self.image.set_colorkey(BLACK)     
         # Detalhes sobre o posicionamento.
-        self.rect = self.image.get_rect()
-        
+        self.rect = self.image.get_rect()     
         # Coloca no lugar inicial definido em x, y do constutor
         self.rect.bottom = y+60
         self.rect.centerx = x
         self.speedx = 10
-
-    
     def update(self):
-        self.rect.x += self.speedx
-        
+        self.rect.x += self.speedx   
         # Se o tiro passar do inicio da tela, morre.
         if self.rect.bottom < 0:
             self.kill()
-
+          
 class GameManager:
     def __init__(self):
         self.px = 0
@@ -178,7 +139,6 @@ pygame.mixer.init()
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-
 pygame.display.set_caption("Avengers the Game")
 
 assets = load_assets(img_dir)
@@ -195,7 +155,7 @@ player = Player(assets["player_img"], manager)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
-# Cria um grupo só dos thanos
+# Cria um grupo só do thanos
 mobs = pygame.sprite.Group()
 
 # Cria um grupo para tiros
@@ -207,16 +167,13 @@ for i in range(8):
     all_sprites.add(m)
     mobs.add(m)
 
-
-try:
-    
+try:   
     running = True
     while running:
         clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     player.speedx = -8
@@ -238,8 +195,7 @@ try:
                 if event.key == pygame.K_UP:
                     player.speedy = 0
                 if event.key == pygame.K_DOWN:
-                    player.speedy = 0
-           
+                    player.speedy = 0    
         all_sprites.update()
             
          # Verifica se houve colisão entre propulsor e Thanos
@@ -255,7 +211,6 @@ try:
         if hits:
             # Toca o som da colisão
            time.sleep(1) # Precisa esperar senão fecha
-           
            running = False
    
         # A cada loop, redesenha o fundo e os sprites
