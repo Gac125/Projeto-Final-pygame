@@ -137,6 +137,16 @@ def load_assets(img_dir):
     assets["background"] = pygame.image.load(path.join(fundo, 'houses31.png')).convert()
 #    assets["title"] = pygame.image.load(path.join(tela_I, 'Tela_inicio.png')).convert()
     return assets
+
+class platform(pygame.sprite.Sprite):
+    def __init__(self, x, y, w, h):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((w, h))
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+    
     
 pygame.init()
 pygame.mixer.init()
@@ -158,15 +168,6 @@ player = Player(assets["player_img"], manager)
 # Cria um grupo de todos os sprites e adiciona a nave.
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
-
-class platform(pygame.sprite.Sprite):
-    def __init__(self, x, y, w, h):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((w, h))
-        self.image.fill(YELLOW)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
 
 #Cria um gupo de plataforma
 platforms = pygame.sprite.Group()
