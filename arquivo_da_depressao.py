@@ -54,7 +54,7 @@ class Player(pygame.sprite.Sprite):
         # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = 25
     def update(self):
-        self.acc = vec(0,0.5)
+        self.acc = vec(0,0)
         keys=pygame.key.get_pressed() 
         if keys[pygame.K_LEFT]:
             self.acc.x=-PLAYER_ACC

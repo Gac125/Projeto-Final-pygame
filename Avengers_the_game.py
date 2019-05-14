@@ -167,9 +167,7 @@ def load_assets(img_dir):
 #    assets["title"] = pygame.image.load(path.join(tela_I, 'Tela_inicio.png')).convert()
     return assets
 
-<<<<<<< HEAD
 
-=======
 class platform(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h):
         pygame.sprite.Sprite.__init__(self)
@@ -178,11 +176,6 @@ class platform(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-    
-    
->>>>>>> c8c751258fa85a0dc70a05a911aea1291ca2009b
-pygame.init()
-pygame.mixer.init()
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
