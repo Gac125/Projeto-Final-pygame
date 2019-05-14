@@ -191,7 +191,7 @@ try:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-#            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
 #                if event.key == pygame.K_LEFT:
 #                    player.acc.x = -8
 #                if event.key == pygame.K_RIGHT:
@@ -200,10 +200,10 @@ try:
 #                    player.speedy = -50
 #                if event.key == pygame.K_DOWN:
 #                    player.speedy = 50
-#                if event.key == pygame.K_SPACE:
-#                    bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
-#                    all_sprites.add(bullet)
-#                    bullets.add(bullet)        
+                if event.key == pygame.K_SPACE:
+                    bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
+                    all_sprites.add(bullet)
+                    bullets.add(bullet)        
 #            if event.type == pygame.KEYUP:
 #                if event.key == pygame.K_LEFT:
 #                   player.acc.x = 0
@@ -219,9 +219,12 @@ try:
         hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
         for hit in hits: # Pode haver mais de um
             # O meteoro e destruido e precisa ser recriado
-            m = Mob(assets["mob_img"], manager) 
+            m = Mob(assets["mob_img"], manager)
+            v = Mob(assets["mob_img"], manager)
             all_sprites.add(m)
+            all_sprites.add(v)
             mobs.add(m)
+            mobs.add(v)
         
         # Verifica se houve colisão entre nave e meteoro
         hits = pygame.sprite.spritecollide(player, mobs, False, pygame.sprite.collide_circle)
