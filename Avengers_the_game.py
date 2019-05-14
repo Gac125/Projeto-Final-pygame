@@ -7,6 +7,8 @@ import random
 import time
 from os import path
 
+vec = pygame.math.Vector2
+
 # Estabelece a pasta que contem as figuras e sons.
 img_dir = path.join(path.dirname(__file__), 'Avengers anime')
 #fundo = path.join(path.dirname(__file__), 'Backgrounds')
@@ -83,6 +85,7 @@ class Mob(pygame.sprite.Sprite):
         self.rect.y = self.py - self.manager.py               
         # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = int(self.rect.width * .85 / 2)    
+
     def update(self):
         self.px += self.speedx
         self.py += self.speedy    
@@ -110,6 +113,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.bottom = y+60
         self.rect.centerx = x
         self.speedx = 10
+
     def update(self):
         self.rect.x += self.speedx   
         # Se o tiro passar do inicio da tela, morre.
@@ -155,6 +159,22 @@ player = Player(assets["player_img"], manager)
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
+class platform(pygame.sprite.Sprite):
+    def __init__(self, x, y, w, h):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((w, h))
+        self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+#Cria um gupo de plataforma
+platforms = pygame.sprite.Group()
+pl = platform(0, HEIGHT - 100, WIDTH, 100)
+all_sprites.add(pl)
+
+
+
 # Cria um grupo só do thanos
 mobs = pygame.sprite.Group()
 
@@ -194,8 +214,8 @@ try:
                     player.speedx = 0
                 if event.key == pygame.K_UP:
                     player.speedy = 0
-  #              if event.key == pygame.K_DOWN:
-   #                 player.speedy = 0    
+                if event.key == pygame.K_DOWN:
+                   player.speedy = 0    
         all_sprites.update()
             
          # Verifica se houve colisão entre propulsor e Thanos
