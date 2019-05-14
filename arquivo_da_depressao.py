@@ -26,6 +26,9 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
+#Propriedades do Player
+PLAYER_ACC=0.5
+PLAYER_FRICTION=-0.1
 
 class Player(pygame.sprite.Sprite):
     # Construtor da classe.
@@ -51,16 +54,18 @@ class Player(pygame.sprite.Sprite):
         # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = 25
     def update(self):
-        self.acc = vec(0,0)
+        self.acc = vec(0,0.5)
         keys=pygame.key.get_pressed() 
         if keys[pygame.K_LEFT]:
-            self.acc.x=-0.5
+            self.acc.x=-PLAYER_ACC
         if keys[pygame.K_RIGHT]:
-            self.acc.x=0.5
-        self.vel+=self.acc        
-        self.pos+=self.vel+0.5*self.acc
+            self.acc.x=PLAYER_ACC
         
+        self.acc += self.vel*PLAYER_FRICTION
+        self.vel += self.acc        
+        self.pos += self.vel+0.5*self.acc
         
+        self.rect.center=self.pos
         
         # Mantem dentro da tela
         if self.rect.right > WIDTH:
@@ -128,10 +133,10 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.bottom < 0:
             self.kill()
           
-#class GameManager:
-#    def __init__(self):
-#        self.px = 0
-#        self.py = 0
+class GameManager:
+    def __init__(self):
+        self.px = 0
+        self.py = 0
 
 def load_assets(img_dir):
     Homem = path.join(img_dir, 'Iron Man')
