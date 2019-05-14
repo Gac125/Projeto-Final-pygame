@@ -25,6 +25,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
+GRAY = (128, 128, 128)
 
 #Propriedades do Player
 PLAYER_ACC=0.5
@@ -142,6 +143,21 @@ def load_assets(img_dir):
 #    assets["title"] = pygame.image.load(path.join(tela_I, 'Tela_inicio.png')).convert()
     return assets
 
+#
+
+class platform(pygame.sprite.Sprite):
+    def __init__(self, x, y, w, h):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((w, h))
+        self.image.fill(GRAY)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+#Cria um gupo de plataforma
+
+#
+
 pygame.init()
 pygame.mixer.init()
 
@@ -162,6 +178,11 @@ player = Player(assets["player_img"], manager)
 # Cria um grupo de todos os sprites e adiciona o mob.
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
+
+platforms = pygame.sprite.Group()
+pl = platform(0, HEIGHT - 25, WIDTH, 100)
+all_sprites.add(pl)
+
 
 # Cria um grupo só do thanos
 mobs = pygame.sprite.Group()

@@ -25,8 +25,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
-
-GRAVITY = 5
+GRAY = (128, 128, 128)
 
 
 class Player(pygame.sprite.Sprite):
@@ -51,15 +50,9 @@ class Player(pygame.sprite.Sprite):
         self.speedy = 0
         # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = 25
-        
-        self.jumping = False
-        
     def update(self):
         self.manager.px += self.speedx
         self.manager.py += self.speedy
-        if self.jumping:
-            self.speedy += GRAVITY
-        
         # Mantem dentro da tela
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
@@ -69,28 +62,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = HEIGHT
         if self.rect.bottom < HEIGHT:
             self.rect.bottom = HEIGHT
-
-class Platform(pygame.sprite.Sprite):
-    # Construtor da classe.
-    def __init__(self, x, y, width, height, manager):     
-        # Construtor da classe pai (Sprite).
-        pygame.sprite.Sprite.__init__(self) 
-
-        self.px = x
-        self.py = y
-
-        self.manager = manager
-
-        self.image = pygame.Surface((width, height))
-
-        self.rect = self.image.get_rect()
-        self.rect.x = self.px - self.manager.px
-        self.rect.y = self.py - self.manager.py
-
-    def update(self):
-        self.rect.x
-
-
+            
 class Mob(pygame.sprite.Sprite): 
     # Construtor da classe.
     def __init__(self, mob_img, manager):      
@@ -167,15 +139,18 @@ def load_assets(img_dir):
 #    assets["title"] = pygame.image.load(path.join(tela_I, 'Tela_inicio.png')).convert()
     return assets
 
-
 class platform(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((w, h))
-        self.image.fill(YELLOW)
+        self.image.fill(GRAY)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+    
+pygame.init()
+pygame.mixer.init()
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -197,7 +172,7 @@ all_sprites.add(player)
 
 #Cria um gupo de plataforma
 platforms = pygame.sprite.Group()
-pl = platform(0, HEIGHT - 100, WIDTH, 100)
+pl = platform(0, HEIGHT - 25, WIDTH, 100)
 all_sprites.add(pl)
 
 
@@ -207,10 +182,6 @@ mobs = pygame.sprite.Group()
 
 # Cria um grupo para tiros
 bullets = pygame.sprite.Group()
-
-platforms = pygame.sprite.Group()
-ground = Platform(0, HEIGHT - 10, WIDTH, 10, manager)
-platforms.add(ground)
 
 # Cria 8 meteoros e adiciona no grupo thanos
 for i in range(8):
@@ -231,8 +202,7 @@ try:
                 if event.key == pygame.K_RIGHT:
                     player.speedx = 8
                 if event.key == pygame.K_UP:
-                    player.speedy = -20
-                    player.jumping = True
+                    player.speedy = -50
     #            if event.key == pygame.K_DOWN:
      #               player.speedy = 50
                 if event.key == pygame.K_SPACE:
@@ -265,15 +235,6 @@ try:
            time.sleep(1) # Precisa esperar senão fecha
            running = False
    
-        # Verifica se houve colisão entre nave e meteoro
-        hits = pygame.sprite.spritecollide(player, platforms, False, pygame.sprite.collide_rect)
-        if hits:
-            manager.px -= player.speedx
-            manager.py -= player.speedy
-            player.speedy = 0
-            player.jumping = False
-    
-    
         # A cada loop, redesenha o fundo e os sprites
         screen.fill(BLACK)
         background_rect = background.get_rect()
