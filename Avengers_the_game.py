@@ -181,8 +181,8 @@ try:
                     player.speedx = 8
                 if event.key == pygame.K_UP:
                     player.speedy = -50
-                if event.key == pygame.K_DOWN:
-                    player.speedy = 50
+    #            if event.key == pygame.K_DOWN:
+     #               player.speedy = 50
                 if event.key == pygame.K_SPACE:
                     bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
                     all_sprites.add(bullet)
@@ -194,8 +194,8 @@ try:
                     player.speedx = 0
                 if event.key == pygame.K_UP:
                     player.speedy = 0
-                if event.key == pygame.K_DOWN:
-                    player.speedy = 0    
+  #              if event.key == pygame.K_DOWN:
+   #                 player.speedy = 0    
         all_sprites.update()
             
          # Verifica se houve colisão entre propulsor e Thanos
