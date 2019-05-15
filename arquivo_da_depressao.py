@@ -25,6 +25,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
+GREY = (128, 128, 128)
 
 #Propriedades do Player
 PLAYER_ACC=0.5
@@ -84,7 +85,7 @@ class Mob(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.manager = manager       
         # Diminuindo o tamanho da imagem.
-        self.image = pygame.transform.scale(mob_img, (150, 110))                
+        self.image = pygame.transform.scale(mob_img, (200, 160))                
         # Deixando transparente.
         self.image.set_colorkey(WHITE)       
         # Sorteia uma velocidade inicial
@@ -97,7 +98,7 @@ class Mob(pygame.sprite.Sprite):
         self.px = 1052
         # Sorteia um lugar inicial em y
 #        self.py = random.randrange(-100, -40) 
-        self.py = HEIGHT - 150    
+        self.py = HEIGHT - 170
         self.rect.x = self.px - self.manager.px
         self.rect.y = self.py - self.manager.py               
         # Melhora a colisão estabelecendo um raio de um circulo
@@ -135,6 +136,15 @@ class Bullet(pygame.sprite.Sprite):
         # Se o tiro passar do inicio da tela, morre.
         if self.rect.bottom < 0:
             self.kill()
+
+class platform(pygame.sprite.Sprite):
+    def __init__(self, x, y, w, h):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((w, h))
+        self.image.fill(GREY)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
           
 class GameManager:
     def __init__(self):
@@ -174,6 +184,11 @@ player = Player(assets["player_img"], manager)
 # Cria um grupo de todos os sprites e adiciona a nave.
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
+
+#Cria um gupo de plataforma
+platforms = pygame.sprite.Group()
+pl = platform(0, HEIGHT - 25, WIDTH, 100)
+all_sprites.add(pl)
 
 # Cria um grupo só do thanos
 mobs = pygame.sprite.Group()
