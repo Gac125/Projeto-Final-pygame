@@ -25,7 +25,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
-GRAY = (128, 128, 128)
+GREY = (128, 128, 128)
 
 #Propriedades do Player
 PLAYER_ACC=0.5
@@ -99,12 +99,6 @@ class Mob(pygame.sprite.Sprite):
         self.py += self.speedy    
         self.rect.x = self.px - self.manager.px
         self.rect.y = self.py - self.manager.py             
-        # Se o meteoro passar do final da tela, volta para cima
-        if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 20:
-            self.rect.x = random.randrange(WIDTH - self.rect.width)
-            self.rect.y = random.randrange(-100, -40)
-            self.speedx = random.randrange(-3, 3)
-            self.speedy = random.randrange(2, 9)
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, bullet_img):    
@@ -149,7 +143,7 @@ class platform(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((w, h))
-        self.image.fill(GRAY)
+        self.image.fill(GREY)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

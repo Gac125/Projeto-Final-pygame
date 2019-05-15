@@ -106,11 +106,11 @@ class Mob(pygame.sprite.Sprite):
         self.rect.x = self.px - self.manager.px
         self.rect.y = self.py - self.manager.py             
         # Se o meteoro passar do final da tela, volta para cima
-        if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 20:
-            self.rect.x = random.randrange(WIDTH - self.rect.width)
-            self.rect.y = random.randrange(-100, -40)
-            self.speedx = random.randrange(-3, 3)
-            self.speedy = random.randrange(2, 9)
+  #      if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 20:
+  #          self.rect.x = random.randrange(WIDTH - self.rect.width)
+  #          self.rect.y = random.randrange(-100, -40)
+  #          self.speedx = random.randrange(-3, 3)
+  #          self.speedy = random.randrange(2, 9)
       
 class Bullet(pygame.sprite.Sprite):
     # Construtor da classe.
@@ -191,7 +191,7 @@ try:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-#            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
 #                if event.key == pygame.K_LEFT:
 #                    player.acc.x = -8
 #                if event.key == pygame.K_RIGHT:
@@ -200,10 +200,10 @@ try:
 #                    player.speedy = -50
 #                if event.key == pygame.K_DOWN:
 #                    player.speedy = 50
-#                if event.key == pygame.K_SPACE:
-#                    bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
-#                    all_sprites.add(bullet)
-#                    bullets.add(bullet)        
+                if event.key == pygame.K_SPACE:
+                    bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
+                    all_sprites.add(bullet)
+                    bullets.add(bullet)        
 #            if event.type == pygame.KEYUP:
 #                if event.key == pygame.K_LEFT:
 #                   player.acc.x = 0
