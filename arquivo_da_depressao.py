@@ -15,7 +15,7 @@ img_dir = path.join(path.dirname(__file__), 'Avengers anime')
 
 # Dados gerais do jogo.
 WIDTH = 1052 # Largura da tela
-HEIGHT = 704 # Altura da tela
+HEIGHT = 650 # Altura da tela
 FPS = 60 # Frames por segundo
 
 # Define algumas variáveis com as cores básicas
@@ -47,7 +47,7 @@ class Player(pygame.sprite.Sprite):
         # Centraliza embaixo da tela.
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
-        # Velocidade da nave
+        # Velocidade
         self.pos=vec(WIDTH/2, HEIGHT/2)
         self.vel=vec(0,0)
         self.acc=vec(0,0)
@@ -84,18 +84,20 @@ class Mob(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.manager = manager       
         # Diminuindo o tamanho da imagem.
-        self.image = pygame.transform.scale(mob_img, (50, 38))                
+        self.image = pygame.transform.scale(mob_img, (150, 110))                
         # Deixando transparente.
         self.image.set_colorkey(WHITE)       
         # Sorteia uma velocidade inicial
         self.speedx = random.randrange(-3, 3)
-        self.speedy = random.randrange(2, 9)       
+  #      self.speedy = random.randrange(2, 9)
+        self.speedy = 0       
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
         # Sorteia um lugar inicial em x
-        self.px = random.randrange(WIDTH - self.rect.width)
+        self.px = 1052
         # Sorteia um lugar inicial em y
-        self.py = random.randrange(-100, -40)       
+#        self.py = random.randrange(-100, -40) 
+        self.py = HEIGHT - 150    
         self.rect.x = self.px - self.manager.px
         self.rect.y = self.py - self.manager.py               
         # Melhora a colisão estabelecendo um raio de um circulo
@@ -126,9 +128,10 @@ class Bullet(pygame.sprite.Sprite):
         # Coloca no lugar inicial definido em x, y do constutor
         self.rect.bottom = y+60
         self.rect.centerx = x
+      #  self.vel = vec(10,0)
         self.speedx = 10
     def update(self):
-        self.rect.x += self.speedx   
+        self.rect.x += self.speedx
         # Se o tiro passar do inicio da tela, morre.
         if self.rect.bottom < 0:
             self.kill()
