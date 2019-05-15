@@ -219,9 +219,12 @@ try:
         hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
         for hit in hits: # Pode haver mais de um
             # O meteoro e destruido e precisa ser recriado
-            m = Mob(assets["mob_img"], manager) 
+            m = Mob(assets["mob_img"], manager)
+            v = Mob(assets["mob_img"], manager)
             all_sprites.add(m)
+            all_sprites.add(v)
             mobs.add(m)
+            mobs.add(v)
         
         # Verifica se houve colisão entre nave e meteoro
         hits = pygame.sprite.spritecollide(player, mobs, False, pygame.sprite.collide_circle)
