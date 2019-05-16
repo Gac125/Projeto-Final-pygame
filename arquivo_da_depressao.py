@@ -6,7 +6,6 @@ import pygame
 import random
 import time
 from os import path
-from config_depressao import img_dir, snd_dir, fnt_dir, WIDTH, HEIGHT, BLACK, WHITE, YELLOW, RED, FPS, GREY
 
 vec=pygame.math.Vector2
 #Propriedades do Player
@@ -226,10 +225,10 @@ def game_screen(screen):
                         player.speedy = -50
 #                if event.key == pygame.K_DOWN:
 #                    player.speedy = 50
-                if event.key == pygame.K_SPACE:
-                    bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
-                    all_sprites.add(bullet)
-                    bullets.add(bullet)        
+                    if event.key == pygame.K_SPACE:
+                        bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
+                        all_sprites.add(bullet)
+                        bullets.add(bullet)        
 #            if event.type == pygame.KEYUP:
 #                if event.key == pygame.K_LEFT:
 #                   player.acc.x = 0
