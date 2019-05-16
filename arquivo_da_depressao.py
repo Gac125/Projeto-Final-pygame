@@ -31,6 +31,7 @@ GREY = (128, 128, 128)
 PLAYER_ACC=0.5
 PLAYER_FRICTION=-0.1
 
+
 class Player(pygame.sprite.Sprite):
     # Construtor da classe.
     def __init__(self, player_img, manager):     
@@ -46,7 +47,7 @@ class Player(pygame.sprite.Sprite):
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
         # Centraliza embaixo da tela.
-        self.rect.centerx = WIDTH / 2
+        self.rect.centerx = WIDTH / 3
         self.rect.bottom = HEIGHT - 10
         # Velocidade
         self.pos=vec(WIDTH/2, HEIGHT/2)
@@ -54,6 +55,7 @@ class Player(pygame.sprite.Sprite):
         self.acc=vec(0,0)
         # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = 25
+
     def update(self):
         self.acc = vec(0,0.5)
         keys=pygame.key.get_pressed() 
@@ -78,6 +80,7 @@ class Player(pygame.sprite.Sprite):
         if self.rect.bottom < HEIGHT:
             self.rect.bottom = HEIGHT
             
+
 class Mob(pygame.sprite.Sprite): 
     # Construtor da classe.
     def __init__(self, mob_img, manager):      
@@ -115,6 +118,7 @@ class Mob(pygame.sprite.Sprite):
   #          self.speedx = random.randrange(-3, 3)
   #          self.speedy = random.randrange(2, 9)
       
+
 class Bullet(pygame.sprite.Sprite):
     # Construtor da classe.
     def __init__(self, x, y, bullet_img):    
@@ -131,11 +135,13 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.centerx = x
       #  self.vel = vec(10,0)
         self.speedx = 10
+
     def update(self):
         self.rect.x += self.speedx
         # Se o tiro passar do inicio da tela, morre.
         if self.rect.bottom < 0:
             self.kill()
+
 
 class platform(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h):
@@ -145,6 +151,7 @@ class platform(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
           
 class GameManager:
     def __init__(self):
@@ -197,13 +204,22 @@ mobs = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 
 # Cria 8 meteoros e adiciona no grupo thanos
-for i in range(8):
+for i in range(10):
     m = Mob(assets["mob_img"], manager)
     all_sprites.add(m)
     mobs.add(m)
 
-try:   
+try:  
+
     running = True
+
+    def update(self):
+     self.all.sprites.update()
+     hits = pygame.sprite.spritecollide(self.player,self.platforms,False)
+     if hits:
+        self.player.pos.y = hits[0].rect.top
+        self.player.vel.y = 0
+
     while running:
         clock.tick(FPS)
         for event in pygame.event.get():
@@ -212,13 +228,13 @@ try:
             if event.type == pygame.KEYDOWN:
 #                if event.key == pygame.K_LEFT:
 #                    player.acc.x = -8
-#                if event.key == pygame.K_RIGHT:
-#                    player.acc.x = 8
-#                if event.key == pygame.K_UP:
-#                    player.speedy = -50
+                 if event.key == pygame.K_RIGHT:
+                     player.acc.x = 8
+                 if event.key == pygame.K_UP:
+                   player.speedy = -50
 #                if event.key == pygame.K_DOWN:
 #                    player.speedy = 50
-                if event.key == pygame.K_SPACE:
+                 if event.key == pygame.K_SPACE:
                     bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
                     all_sprites.add(bullet)
                     bullets.add(bullet)        
@@ -243,7 +259,9 @@ try:
             all_sprites.add(v)
             mobs.add(m)
             mobs.add(v)
-        
+
+
+
         # Verifica se houve colisão entre nave e meteoro
         hits = pygame.sprite.spritecollide(player, mobs, False, pygame.sprite.collide_circle)
         if hits:
