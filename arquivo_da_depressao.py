@@ -6,26 +6,10 @@ import pygame
 import random
 import time
 from os import path
+from config_depressao import img_dir, snd_dir, fnt_dir, WIDTH, HEIGHT, BLACK, WHITE, YELLOW, RED, FPS, GREY
 
 vec=pygame.math.Vector2
 
-# Estabelece a pasta que contem as figuras e sons.
-img_dir = path.join(path.dirname(__file__), 'Avengers anime')
-#fundo = path.join(path.dirname(__file__), 'Backgrounds')
-
-# Dados gerais do jogo.
-WIDTH = 1052 # Largura da tela
-HEIGHT = 650 # Altura da tela
-FPS = 60 # Frames por segundo
-
-# Define algumas variáveis com as cores básicas
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-YELLOW = (255, 255, 0)
-GREY = (128, 128, 128)
 
 #Propriedades do Player
 PLAYER_ACC=0.5
@@ -170,6 +154,13 @@ def load_assets(img_dir):
     assets["background"] = pygame.image.load(path.join(fundo, 'houses31.png')).convert()
 #    assets["title"] = pygame.image.load(path.join(tela_I, 'Tela_inicio.png')).convert()
     return assets
+
+def game_screen(screen):
+    assets = load_assets(img_dir, )
+
+
+
+####    
     
 pygame.init()
 pygame.mixer.init()
