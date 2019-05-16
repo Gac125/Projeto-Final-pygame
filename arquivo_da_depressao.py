@@ -10,6 +10,14 @@ from config_depressao import img_dir, snd_dir, fnt_dir, WIDTH, HEIGHT, BLACK, WH
 
 vec=pygame.math.Vector2
 
+pygame.init()
+pygame.mixer.init()
+
+# Tamanho da tela.
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+# Nome do jogo
+pygame.display.set_caption("Navinha")
 
 #Propriedades do Player
 PLAYER_ACC=0.5
@@ -156,76 +164,83 @@ def load_assets(img_dir):
     return assets
 
 def game_screen(screen):
-    assets = load_assets(img_dir, )
 
+    assets = load_assets(img_dir)
 
+    clock = pygame.time.Clock()
 
-####    
+    background = assets["background"]
+   
     
-pygame.init()
-pygame.mixer.init()
+    pygame.init()
+    pygame.mixer.init()
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-pygame.display.set_caption("Avengers the Game")
+    pygame.display.set_caption("Avengers the Game")
 
-assets = load_assets(img_dir)
+    manager = GameManager()
 
-clock = pygame.time.Clock()
-
-background = assets["background"]
-
-manager = GameManager()
-
-player = Player(assets["player_img"], manager)
+    player = Player(assets["player_img"], manager)
 
 # Cria um grupo de todos os sprites e adiciona a nave.
-all_sprites = pygame.sprite.Group()
-all_sprites.add(player)
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(player)
 
 #Cria um gupo de plataforma
-platforms = pygame.sprite.Group()
-pl = platform(0, HEIGHT - 25, WIDTH, 100)
-all_sprites.add(pl)
+    platforms = pygame.sprite.Group()
+    pl = platform(0, HEIGHT - 25, WIDTH, 100)
+    all_sprites.add(pl)
 
 # Cria um grupo só do thanos
-mobs = pygame.sprite.Group()
+    mobs = pygame.sprite.Group()
 
 # Cria um grupo para tiros
-bullets = pygame.sprite.Group()
+    bullets = pygame.sprite.Group()
 
 # Cria 8 meteoros e adiciona no grupo thanos
-for i in range(10):
-    m = Mob(assets["mob_img"], manager)
-    all_sprites.add(m)
-    mobs.add(m)
+    for i in range(10):
+        m = Mob(assets["mob_img"], manager)
+        all_sprites.add(m)
+        mobs.add(m)
 
-try:  
+#try:  
 
-    running = True
+#    running = True
 
-    def update(self):
-     self.all.sprites.update()
-     hits = pygame.sprite.spritecollide(self.player,self.platforms,False)
-     if hits:
-        self.player.pos.y = hits[0].rect.top
-        self.player.vel.y = 0
+#    def update(self):
+#     self.all.sprites.update()
+#     hits = pygame.sprite.spritecollide(self.player,self.platforms,False)
+#     if hits:
+#       self.player.pos.y = hits[0].rect.top
+#        self.player.vel.y = 0
 
-    while running:
+
+    PLAYING = 0
+    EXPLODING = 1
+    DONE = 2
+
+    state = PLAYING
+    while state != DONE:
+    #while running:
+
         clock.tick(FPS)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.KEYDOWN:
+
+        if state == PLAYING:
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.KEYDOWN:
 #                if event.key == pygame.K_LEFT:
 #                    player.acc.x = -8
-                 if event.key == pygame.K_RIGHT:
-                     player.acc.x = 8
-                 if event.key == pygame.K_UP:
-                   player.speedy = -50
+                    if event.key == pygame.K_RIGHT:
+                        player.acc.x = 8
+                    if event.key == pygame.K_UP:
+                        player.speedy = -50
 #                if event.key == pygame.K_DOWN:
 #                    player.speedy = 50
-                 if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_SPACE:
                     bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
                     all_sprites.add(bullet)
                     bullets.add(bullet)        
@@ -236,31 +251,30 @@ try:
 #                    player.acc.x = 0
 #                if event.key == pygame.K_UP:
 #                    player.speedy = 0
-#                if event.key == pygame.K_DOWN:
-#                    player.speedy = 0    
+
         all_sprites.update()
-            
+
+
+        if state == PLAYING:    
+
          # Verifica se houve colisão entre propulsor e Thanos
-        hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
-        for hit in hits: # Pode haver mais de um
+            hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
+            for hit in hits: # Pode haver mais de um
             # O meteoro e destruido e precisa ser recriado
-            m = Mob(assets["mob_img"], manager)
-            v = Mob(assets["mob_img"], manager)
-            all_sprites.add(m)
-            all_sprites.add(v)
-            mobs.add(m)
-            mobs.add(v)
-
-
+                m = Mob(assets["mob_img"], manager)
+                v = Mob(assets["mob_img"], manager)
+                all_sprites.add(m)
+                all_sprites.add(v)
+                mobs.add(m)
+                mobs.add(v)
 
         # Verifica se houve colisão entre nave e meteoro
-        hits = pygame.sprite.spritecollide(player, mobs, False, pygame.sprite.collide_circle)
-        if hits:
-            # Toca o som da colisão
-           time.sleep(1) # Precisa esperar senão fecha
-           running = False
-   
-        # A cada loop, redesenha o fundo e os sprites
+            hits = pygame.sprite.spritecollide(player, mobs, False, pygame.sprite.collide_circle)
+            if hits:
+                # Toca o som da colisão
+               time.sleep(1) # Precisa esperar senão fecha
+               running = False
+            # A cada loop, redesenha o fundo e os sprites
         screen.fill(BLACK)
         background_rect = background.get_rect()
         background_rect.x = -manager.px
@@ -270,10 +284,12 @@ try:
         
         # Depois de desenhar tudo, inverte o display.
         pygame.display.flip()
+
+    return QUIT
         
-finally:
+#finally:
     
-    pygame.quit()
+#    pygame.quit()
     
     
     
