@@ -9,16 +9,6 @@ from os import path
 from config_depressao import img_dir, snd_dir, fnt_dir, WIDTH, HEIGHT, BLACK, WHITE, YELLOW, RED, FPS, GREY
 
 vec=pygame.math.Vector2
-
-pygame.init()
-pygame.mixer.init()
-
-# Tamanho da tela.
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
-# Nome do jogo
-pygame.display.set_caption("Navinha")
-
 #Propriedades do Player
 PLAYER_ACC=0.5
 PLAYER_FRICTION=-0.1
@@ -170,10 +160,6 @@ def game_screen(screen):
     clock = pygame.time.Clock()
 
     background = assets["background"]
-   
-    
-    pygame.init()
-    pygame.mixer.init()
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 

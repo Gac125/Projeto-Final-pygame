@@ -5,8 +5,8 @@ import time
 
 from os import path
 
-from config import WIDTH, HEIGHT, INIT, GAME, QUIT
-from init_screen import init_screen
+from config_depressao import WIDTH, HEIGHT, INIT, GAME, QUIT
+#from init_screen import init_screen
 from arquivo_da_depressao import arquivo_da_depressao
 
 # Inicialização do Pygame.
@@ -17,7 +17,7 @@ pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Nome do jogo
-pygame.display.set_caption("Navinha")
+pygame.display.set_caption("Avengers the game")
 
 # Comando para evitar travamentos.
 try:
