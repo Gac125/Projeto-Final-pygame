@@ -18,6 +18,7 @@ vec=pygame.math.Vector2
 #Propriedades do Player
 PLAYER_ACC=0.5
 PLAYER_FRICTION=-0.1
+PLAYER_JUMP = -15
 
 class Player(pygame.sprite.Sprite):
     # Construtor da classe.
@@ -45,15 +46,18 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         Velocidade = False
-        if Velocidade:
-            self.acc = vec(0,0.5)
-        if not Velocidade:
-            self.acc = vec(0,0)
+        #if Velocidade:
+        #    self.acc = vec(0,0.5)
+        #if not Velocidade:
+        #    self.acc = vec(0,0)
         keys=pygame.key.get_pressed() 
         if keys[pygame.K_LEFT]:
             self.acc.x=-PLAYER_ACC
         if keys[pygame.K_RIGHT]:
             self.acc.x=PLAYER_ACC
+        if keys[pygame.K_UP]:
+            self.acc.y = PLAYER_JUMP
+
         
         self.acc += self.vel*PLAYER_FRICTION
         self.vel += self.acc        
@@ -215,12 +219,6 @@ def game_screen(screen):
         clock.tick(FPS)
 
         if state == PLAYING:
-            def update(self):
-                self.all.sprites.update()
-                hits = pygame.sprite.spritecollide(self.player,self.platforms,False)
-                if hits:
-                    self.player.pos.y = hits[0].rect.top
-                    self.player.vel.y = 0
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -228,34 +226,28 @@ def game_screen(screen):
                 if event.type == pygame.KEYDOWN:
 #                if event.key == pygame.K_LEFT:
 #                    player.acc.x = -8
-                    if event.key == pygame.K_RIGHT:
-                        player.acc.x = 8
-                    if event.key == pygame.K_UP:
-                        player.speedy = -50
+                    #if event.key == pygame.K_RIGHT:
+                        #player.acc.x = 8
+                    #if event.key == pygame.K_UP:
+                        #player.speedy = -50
 #                if event.key == pygame.K_DOWN:
 #                    player.speedy = 50
                     if event.key == pygame.K_SPACE:
                         bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
                         all_sprites.add(bullet)
                         bullets.add(bullet)        
-#            if event.type == pygame.KEYUP:
-#                if event.key == pygame.K_LEFT:
-#                   player.acc.x = 0
+                    #if event.type == pygame.KEYUP:
+                        #if event.key == pygame.K_LEFT:
+                            #player.acc.y = 6
 #                if event.key == pygame.K_RIGHT:
 #                    player.acc.x = 0
-#                if event.key == pygame.K_UP:
-#                    player.speedy = 0
+                    if event.key == pygame.K_UP:
+                            player.speedy = 5
 
         all_sprites.update()
 
 
         if state == PLAYING:    
-            def update(self):
-                self.all.sprites.update()
-                hits = pygame.sprite.spritecollide(self.player,self.platforms,False)
-                if hits:
-                    self.player.pos.y = hits[0].rect.top
-                    self.player.vel.y = 0
 
          # Verifica se houve colisão entre propulsor e Thanos
             hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
@@ -278,7 +270,7 @@ def game_screen(screen):
             hits = pygame.sprite.spritecollide(player,platforms,True,True)
             for hit in hits:
                 Velocidade = True
-            # A cada loop, redesenha o fundo e os sprites
+             #A cada loop, redesenha o fundo e os sprites
         screen.fill(BLACK)
         background_rect = background.get_rect()
         background_rect.x = -manager.px
