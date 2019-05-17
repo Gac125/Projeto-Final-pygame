@@ -7,7 +7,7 @@ from os import path
 
 from config_depressao import WIDTH, HEIGHT, INIT, GAME, QUIT
 from init_avengers import init_avengers
-import arquivo_da_depressao 
+from arquivo_da_depressao import game_screen
 
 # Inicialização do Pygame.
 pygame.init()
@@ -26,7 +26,7 @@ try:
         if state == INIT:
             state = init_avengers(screen)
         elif state == GAME:
-            state = arquivo_da_depressao(screen)
+            state = game_screen(screen)
         else:
             state = QUIT
 finally:

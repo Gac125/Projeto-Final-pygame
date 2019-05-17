@@ -6,12 +6,18 @@ import pygame
 import random
 import time
 from os import path
+from config_depressao import img_dir, snd_dir, fnt_dir, WIDTH, HEIGHT, BLACK, YELLOW, RED, FPS, QUIT, WHITE, GREY
+
+
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+# Nome do jogo
+pygame.display.set_caption("Avengers the game")
 
 vec=pygame.math.Vector2
 #Propriedades do Player
 PLAYER_ACC=0.5
 PLAYER_FRICTION=-0.1
-
 
 class Player(pygame.sprite.Sprite):
     # Construtor da classe.
@@ -264,9 +270,9 @@ def game_screen(screen):
                time.sleep(1) # Precisa esperar senão fecha
                running = False
         #Verifica se houve colisão entre a plataforma e o player
-        hits = pygame.sprite.spritecollide(player,plataforms,True,True)
-        for hit in hits:
-            Velocidade = True
+    #    hits = pygame.sprite.spritecollide(player,platform,True,True)
+    #    for hit in hits:
+    #       Velocidade = True
             # A cada loop, redesenha o fundo e os sprites
         screen.fill(BLACK)
         background_rect = background.get_rect()
