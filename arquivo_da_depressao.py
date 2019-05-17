@@ -251,6 +251,12 @@ def game_screen(screen):
 
 
         if state == PLAYING:    
+            def update(self):
+                self.all.sprites.update()
+                hits = pygame.sprite.spritecollide(self.player,self.platforms,False)
+                if hits:
+                    self.player.pos.y = hits[0].rect.top
+                    self.player.vel.y = 0
 
          # Verifica se houve colisão entre propulsor e Thanos
             hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
@@ -270,9 +276,9 @@ def game_screen(screen):
                time.sleep(1) # Precisa esperar senão fecha
                state = DONE
         #Verifica se houve colisão entre a plataforma e o player
-    #    hits = pygame.sprite.spritecollide(player,platform,True,True)
-    #    for hit in hits:
-    #       Velocidade = True
+            hits = pygame.sprite.spritecollide(player,platforms,True,True)
+            for hit in hits:
+                Velocidade = True
             # A cada loop, redesenha o fundo e os sprites
         screen.fill(BLACK)
         background_rect = background.get_rect()
