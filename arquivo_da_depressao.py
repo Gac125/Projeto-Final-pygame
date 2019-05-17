@@ -38,7 +38,11 @@ class Player(pygame.sprite.Sprite):
         self.radius = 25
 
     def update(self):
-        self.acc = vec(0,0.5)
+        Velocidade = False
+        if Velocidade:
+            self.acc = vec(0,0.5)
+        if not Velocidade:
+            self.acc = vec(0,0)
         keys=pygame.key.get_pressed() 
         if keys[pygame.K_LEFT]:
             self.acc.x=-PLAYER_ACC
@@ -259,6 +263,10 @@ def game_screen(screen):
                 # Toca o som da colisão
                time.sleep(1) # Precisa esperar senão fecha
                running = False
+        #Verifica se houve colisão entre a plataforma e o player
+        hits = pygame.sprite.spritecollide(player,plataforms,True,True)
+        for hit in hits:
+            Velocidade = True
             # A cada loop, redesenha o fundo e os sprites
         screen.fill(BLACK)
         background_rect = background.get_rect()
