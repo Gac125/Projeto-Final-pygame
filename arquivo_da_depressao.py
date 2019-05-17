@@ -203,13 +203,6 @@ def game_screen(screen):
 
 #    running = True
 
-#    def update(self):
-#     self.all.sprites.update()
-#     hits = pygame.sprite.spritecollide(self.player,self.platforms,False)
-#     if hits:
-#       self.player.pos.y = hits[0].rect.top
-#        self.player.vel.y = 0
-
 
     PLAYING = 0
     EXPLODING = 1
@@ -222,6 +215,12 @@ def game_screen(screen):
         clock.tick(FPS)
 
         if state == PLAYING:
+            def update(self):
+                self.all.sprites.update()
+                hits = pygame.sprite.spritecollide(self.player,self.platforms,False)
+                if hits:
+                    self.player.pos.y = hits[0].rect.top
+                    self.player.vel.y = 0
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
