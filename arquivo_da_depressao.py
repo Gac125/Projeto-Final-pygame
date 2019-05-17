@@ -268,7 +268,7 @@ def game_screen(screen):
             if hits:
                 # Toca o som da colisão
                time.sleep(1) # Precisa esperar senão fecha
-               running = False
+               state = DONE
         #Verifica se houve colisão entre a plataforma e o player
     #    hits = pygame.sprite.spritecollide(player,platform,True,True)
     #    for hit in hits:
