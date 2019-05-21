@@ -136,7 +136,8 @@ def load_assets(img_dir):
     assets["player_img"] = pygame.image.load(path.join(Homem, "Stance_Iron_Man.png")).convert()
     assets["mob_img"] = pygame.image.load(path.join(Thanos, "Stance_Thanos.png")).convert()
     assets["bullet_img1"] = pygame.image.load(path.join(Homem, "Propulsor2.png")).convert()
-#    assets["bullet_img2"] = pygame.image.load(path.join(Homem,"Propulsor.png")).convert()
+    assets["bullet_img2"] = pygame.image.load(path.join(img_dir,"Propulsor.png")).convert()
+    assets["bullet_img3"] = pygame.image.load(path.join(img_dir,"Propulsor3.png")).convert()
     assets["background"] = pygame.image.load(path.join(fundo, 'houses31.png')).convert()
     assets["block_img"] = pygame.image.load(path.join(img_dir, 'Dano_Ultron.png')).convert()
     return assets
@@ -208,11 +209,11 @@ def game_screen(screen):
                     all_sprites.add(bullet)
                     bullets.add(bullet)      
                 elif event.key == ord('w'):
-                    bullet = Bullet(player.rect.centerx, player.rect.top,1,assets["bullet_img"])
+                    bullet = Bullet(player.rect.centerx, player.rect.top,1,assets["bullet_img3"])
                     all_sprites.add(bullet)
                     bullets.add(bullet)          
                 elif event.key == ord('a'):
-                    bullet = Bullet(player.rect.centerx, player.rect.top,0,assets["bullet_img"])
+                    bullet = Bullet(player.rect.centerx, player.rect.top,0,assets["bullet_img2"])
                     all_sprites.add(bullet)
                     bullets.add(bullet)          
             # Verifica se soltou alguma tecla.
