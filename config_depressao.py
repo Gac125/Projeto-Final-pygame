@@ -1,7 +1,7 @@
 from os import path
 
-#Dados do jogo 
 
+#Dados do jogo 
 img_dir = path.join(path.dirname(__file__), 'Avengers anime')
 snd_dir = path.join(path.dirname(__file__), 'snd')
 fnt_dir = path.join(path.dirname(__file__), 'font')

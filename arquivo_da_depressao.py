@@ -6,8 +6,6 @@ import random
 from os import path
 from config_depressao import img_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, GREY, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
 # Nome do jogo
 pygame.display.set_caption("Avengers the game")
 
@@ -93,26 +91,32 @@ class Mob(pygame.sprite.Sprite):
         self.rect.x += self.speedx
         self.rect.y += self.speedy                   
 
-class Bullet(pygame.sprite.Sprite):
+class Bullet(pygame.sprite.Sprite):  
     # Construtor da classe.
-    def __init__(self, x, y, bullet_img):    
+    def __init__(self, x, y,direction, bullet_img):    
         # Construtor da classe pai (Sprite).
-        pygame.sprite.Sprite.__init__(self)      
+        pygame.sprite.Sprite.__init__(self)
         # Carregando a imagem de fundo.
-        self.image = bullet_img    
+        self.image = bullet_img
         # Deixando transparente.
-        self.image.set_colorkey(BLACK)     
+        self.image.set_colorkey(BLACK)
         # Detalhes sobre o posicionamento.
-        self.rect = self.image.get_rect()     
+        self.rect = self.image.get_rect()         
         # Coloca no lugar inicial definido em x, y do constutor
-        self.rect.bottom = y+60
-        self.rect.centerx = x
-        self.speedx = 10
-
+        self.rect.bottom = y + 40
+        self.rect.centerx = x + 10 
+        self.speedx = 20   
+        self.speedy=-20
+        self.direction=direction
     def update(self):
-        self.rect.x += self.speedx
+        if self.direction ==0:
+            self.rect.x -= self.speedx
+        if self.direction==1:
+            self.rect.y+=self.speedy
+        if self.direction==2:
+            self.rect.x += self.speedx
         # Se o tiro passar do inicio da tela, morre.
-        if self.rect.bottom < 0:
+        if self.rect.centerx < 0:
             self.kill()
 
 class platform(pygame.sprite.Sprite):
@@ -131,7 +135,8 @@ def load_assets(img_dir):
     assets = {}
     assets["player_img"] = pygame.image.load(path.join(Homem, "Stance_Iron_Man.png")).convert()
     assets["mob_img"] = pygame.image.load(path.join(Thanos, "Stance_Thanos.png")).convert()
-    assets["bullet_img"] = pygame.image.load(path.join(Homem, "Propulsor2.png")).convert()
+    assets["bullet_img1"] = pygame.image.load(path.join(Homem, "Propulsor2.png")).convert()
+#    assets["bullet_img2"] = pygame.image.load(path.join(Homem,"Propulsor.png")).convert()
     assets["background"] = pygame.image.load(path.join(fundo, 'houses31.png')).convert()
     assets["block_img"] = pygame.image.load(path.join(img_dir, 'Dano_Ultron.png')).convert()
     return assets
@@ -198,10 +203,18 @@ def game_screen(screen):
                     player.speedx += SPEED_X
                 elif event.key == pygame.K_DOWN:
                     player.speedy -= SPEED_Y
-                elif event.key == pygame.K_SPACE:
-                    bullet = Bullet(player.rect.centerx, player.rect.top, assets["bullet_img"])
+                elif event.key == ord('d'):
+                    bullet = Bullet(player.rect.centerx, player.rect.top,2,assets["bullet_img"])
                     all_sprites.add(bullet)
-                    bullets.add(bullet)                   
+                    bullets.add(bullet)      
+                elif event.key == ord('w'):
+                    bullet = Bullet(player.rect.centerx, player.rect.top,1,assets["bullet_img"])
+                    all_sprites.add(bullet)
+                    bullets.add(bullet)          
+                elif event.key == ord('a'):
+                    bullet = Bullet(player.rect.centerx, player.rect.top,0,assets["bullet_img"])
+                    all_sprites.add(bullet)
+                    bullets.add(bullet)          
             # Verifica se soltou alguma tecla.
             if event.type == pygame.KEYUP:
                 # Dependendo da tecla, altera o estado do jogador.
