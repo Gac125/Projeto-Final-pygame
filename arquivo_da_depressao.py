@@ -3,27 +3,8 @@ Jogo Marvel - Giovanna Alves, Giulia Castro e Pedro C√©lia
 """
 import pygame
 import random
-import time
 from os import path
-from config_depressao import img_dir, snd_dir, fnt_dir, WIDTH, HEIGHT, BLACK, YELLOW, RED, FPS, QUIT, WHITE, GREY
-
-INITIAL_BLOCKS = 10
-TILE_SIZE = 80
-SPEED_X = 10
-SPEED_Y = -5
-
-# Define a acelera√ß√£o da gravidade
-GRAVITY = 2
-# Define a velocidade inicial no pulo
-JUMP_SIZE = 30
-# Define a altura do ch√£o
-GROUND = HEIGHT * 6.2 // 6
-
-# Define estados poss√≠veis do jogador
-STILL = 0
-JUMPING = 1
-FALLING = 2
-
+from config_depressao import img_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, GREY, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -56,9 +37,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self) 
         # Carregando a imagem de fundo.
         self.state = STILL
-
         self.image = player_img
-#        self.manager = manager
         # Diminuindo o tamanho da imagem.
         self.image = pygame.transform.scale(player_img, (200,175))
         # Deixando transparente.
@@ -71,34 +50,23 @@ class Player(pygame.sprite.Sprite):
         # Velocidade
         self.speedx = 0
         self.speedy = 0
-        # Melhora a colis√£o estabelecendo um raio de um circulo
+        # Melhora a colis„o estabelecendo um raio de um circulo
         self.radius = 25
-
     def update(self):
         self.speedy += GRAVITY
-
         if self.speedy > 0:
             self.state = FALLING
         self.rect.y +=self.speedy
-
         if self.rect.bottom > GROUND:
             self.rect.bottom = GROUND
             self.speedy = 0
             self.state = STILL
 
     def jump(self):
-        # S√≥ pode pular se ainda n√£o estiver pulando ou caindo
+        # SÛ pode pular se ainda n„o estiver pulando ou caindo
         if self.state == STILL:
             self.speedy -= JUMP_SIZE
-            self.state = JUMPING 
- #       keys=pygame.key.get_pressed() 
- #       if keys[pygame.K_LEFT]:
- #           self.acc.x=-PLAYER_ACC
- #       if keys[pygame.K_RIGHT]:
- #           self.acc.x=PLAYER_ACC
- #       if keys[pygame.K_UP]:
- #           self.acc.y = PLAYER_JUMP
-            
+            self.state = JUMPING             
 
 class Mob(pygame.sprite.Sprite): 
     # Construtor da classe.
@@ -111,28 +79,19 @@ class Mob(pygame.sprite.Sprite):
         self.image.set_colorkey(WHITE)       
         # Sorteia uma velocidade inicial
         self.speedx = random.randrange(-3, 3)
-  #      self.speedy = random.randrange(2, 9)
         self.speedy = 0       
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
         # Sorteia um lugar inicial em x
         self.px = 1052
         # Sorteia um lugar inicial em y
-#        self.py = random.randrange(-100, -40) 
         self.rect.x = 1052
         self.rect.y = HEIGHT - 170          
-        # Melhora a colis√£o estabelecendo um raio de um circulo
+        # Melhora a colis„o estabelecendo um raio de um circulo
         self.radius = int(self.rect.width * .85 / 2)    
     def update(self):
         self.rect.x += self.speedx
-        self.rect.y += self.speedy              
-        # Se o meteoro passar do final da tela, volta para cima
-  #      if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 20:
-  #          self.rect.x = random.randrange(WIDTH - self.rect.width)
-  #          self.rect.y = random.randrange(-100, -40)
-  #          self.speedx = random.randrange(-3, 3)
-  #          self.speedy = random.randrange(2, 9)
-      
+        self.rect.y += self.speedy                   
 
 class Bullet(pygame.sprite.Sprite):
     # Construtor da classe.
@@ -148,7 +107,6 @@ class Bullet(pygame.sprite.Sprite):
         # Coloca no lugar inicial definido em x, y do constutor
         self.rect.bottom = y+60
         self.rect.centerx = x
-      #  self.vel = vec(10,0)
         self.speedx = 10
 
     def update(self):
@@ -156,7 +114,6 @@ class Bullet(pygame.sprite.Sprite):
         # Se o tiro passar do inicio da tela, morre.
         if self.rect.bottom < 0:
             self.kill()
-
 
 class platform(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h):
@@ -171,97 +128,65 @@ def load_assets(img_dir):
     Homem = path.join(img_dir, 'Iron Man')
     Thanos = path.join(img_dir, 'Thanos')
     fundo = path.join(path.dirname(__file__), 'Backgrounds')
-#    tela_I = path.join(path.dirname(__file__), 'Backgrounds')
     assets = {}
     assets["player_img"] = pygame.image.load(path.join(Homem, "Stance_Iron_Man.png")).convert()
     assets["mob_img"] = pygame.image.load(path.join(Thanos, "Stance_Thanos.png")).convert()
     assets["bullet_img"] = pygame.image.load(path.join(Homem, "Propulsor2.png")).convert()
     assets["background"] = pygame.image.load(path.join(fundo, 'houses31.png')).convert()
     assets["block_img"] = pygame.image.load(path.join(img_dir, 'Dano_Ultron.png')).convert()
-#    assets["title"] = pygame.image.load(path.join(tela_I, 'Tela_inicio.png')).convert()
     return assets
 
 def game_screen(screen):
-
     assets = load_assets(img_dir)
-
     clock = pygame.time.Clock()
-
     background = assets["background"]
-
     background_rect = background.get_rect()
-
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
     pygame.display.set_caption("Avengers the Game")
-
- #   manager = GameManager()
-
     player = Player(assets["player_img"])
-
 # Cria um grupo de todos os sprites e adiciona a nave.
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
-
 #Cria um gupo de plataforma
-    platforms = pygame.sprite.Group()
     pl = platform(0, HEIGHT - 25, WIDTH, 100)
     all_sprites.add(pl)
-
 # Cria um grupo s√≥ do thanos
     mobs = pygame.sprite.Group()
-
 # Cria um grupo para tiros
     bullets = pygame.sprite.Group()
-
 # Cria 8 meteoros e adiciona no grupo thanos
     for i in range(20):
         m = Mob(assets["mob_img"])
         all_sprites.add(m)
         mobs.add(m)
-
-
-    world_sprites = pygame.sprite.Group()
-    # Cria blocos espalhados em posi√ß√µes aleat√≥rias do mapa
+    world_sprites = pygame.sprite.Group() 
+    # Cria blocos espalhados em posiÁıes aleatÛrias do mapa
     for i in range(INITIAL_BLOCKS):
         block_x = random.randint(0, WIDTH)
         block_y = random.randint(0, int(HEIGHT * 0.25))
         block = Tile(assets["block_img"], block_x, block_y)
         world_sprites.add(block)
-        # Adiciona tamb√©m no grupo de todos os sprites para serem atualizados e desenhados
+        # Adiciona tambem no grupo de todos os sprites para serem atualizados e desenhados
         all_sprites.add(block)
 
-
-
-
-#try:  
-
-#    running = True
-
-
     PLAYING = 0
-    EXPLODING = 1
     DONE = 2
-
+    
     state = PLAYING
     while state != DONE:
     #while running:
-
         clock.tick(FPS)
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 state = DONE
-
             hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
             for hit in hits: # Pode haver mais de um
             # O meteoro e destruido e precisa ser recriado
                 all_sprites.add(m)
                 mobs.add(m)
-            # Verifica se houve colis√£o entre o player e o meteoro ou com bola de ferro
-            hits = pygame.sprite.spritecollide(player, mobs, False, pygame.sprite.collide_circle)
-            ht=pygame.sprite.spritecollide(player, world_sprites, False, pygame.sprite.collide_circle)            
-
+            # Verifica se houve colis„o entre o player e o meteoro ou com bola de ferro
+            hits = pygame.sprite.spritecollide(player, mobs, False)
+            ht=pygame.sprite.spritecollide(player, world_sprites, False)            
             if hits or ht:
                state = DONE
             # Verifica se apertou alguma tecla.
@@ -288,12 +213,9 @@ def game_screen(screen):
                     player.jump()
                 elif event.key == pygame.K_DOWN:
                     player.speedy = 0           
-
         for block in world_sprites:
-            block.speedx = -player.speedx   
-            
+            block.speedx = -player.speedx        
         all_sprites.update()
-
         background_rect.x -= player.speedx
         # Se o fundo saiu da janela, faz ele voltar para dentro.Verifica se o fundo saiu para a esquerda
         if background_rect.right < 0:
@@ -303,7 +225,7 @@ def game_screen(screen):
             background_rect.x -= background_rect.width      
         for block in world_sprites:
             if block.rect.right < 0:
-                # Destr√≥i o bloco e cria um novo no final da tela
+                # DestrÛi o bloco e cria um novo no final da tela
                 block.kill()
                 block_x = random.randint(WIDTH, int(WIDTH * 1.5))
                 block_y = random.randint(0, int(HEIGHT * 0.75))
@@ -312,23 +234,18 @@ def game_screen(screen):
                 world_sprites.add(new_block)
         # A cada loop, redesenha o fundo e os sprites
         screen.fill(BLACK)      
-        # Desenha o fundo e uma c√≥pia para a direita. Assumimos que a imagem selecionada ocupa pelo menos o tamanho da janela.
-        # Al√©m disso, ela deve ser c√≠clica, ou seja, o lado esquerdo deve ser continua√ß√£o do direito.
+        # Desenha o fundo e uma cÛpia para a direita. Assumimos que a imagem selecionada ocupa pelo menos o tamanho da janela.
+        # AlÈm disso, ela deve ser cÌclica, ou seja, o lado esquerdo deve ser continuaÁ„o do direito.
         screen.blit(background, background_rect)        
         # Desenhamos a imagem novamente, mas deslocada em x.
         background_rect2 = background_rect.copy()
         if background_rect.left > 0:
-            # Precisamos desenhar o fundo √† esquerda
+            # Precisamos desenhar o fundo ‡ esquerda
             background_rect2.x -= background_rect2.width
         else:
-            # Precisamos desenhar o fundo √† direita
+            # Precisamos desenhar o fundo ‡ direita
             background_rect2.x += background_rect2.width
-            
-
-        #Verifica se houve colis√£o entre a plataforma e o player
-
-             #A cada loop, redesenha o fundo e os sprites
-      
+        #A cada loop, redesenha o fundo e os sprites
         screen.blit(background, background_rect)
         all_sprites.draw(screen)
         
@@ -337,6 +254,3 @@ def game_screen(screen):
 
 pygame.init()
 pygame.mixer.init()
-#finally:
-    
-#    pygame.quit()

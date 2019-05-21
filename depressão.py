@@ -8,7 +8,7 @@ from os import path
 from config_depressao import WIDTH, HEIGHT, INIT, GAME, QUIT
 from init_avengers import init_avengers
 from arquivo_da_depressao import game_screen
-
+ 
 # Inicialização do Pygame.
 pygame.init()
 pygame.mixer.init()
