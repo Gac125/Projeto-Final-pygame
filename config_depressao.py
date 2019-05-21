@@ -22,3 +22,21 @@ GREY = (128, 128, 128)
 INIT = 0
 GAME = 1
 QUIT = 2
+
+
+INITIAL_BLOCKS = 10
+TILE_SIZE = 80
+SPEED_X = 10
+SPEED_Y = -5
+
+# Define a aceleração da gravidade
+GRAVITY = 2
+# Define a velocidade inicial no pulo
+JUMP_SIZE = 30
+# Define a altura do chão
+GROUND = HEIGHT * 5 // 6
+
+# Define estados possíveis do jogador
+STILL = 0
+JUMPING = 1
+FALLING = 2
