@@ -18,7 +18,7 @@ GRAVITY = 2
 # Define a velocidade inicial no pulo
 JUMP_SIZE = 30
 # Define a altura do chão
-GROUND = HEIGHT * 5 // 6
+GROUND = HEIGHT * 6.2 // 6
 
 # Define estados possíveis do jogador
 STILL = 0
@@ -30,12 +30,6 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # Nome do jogo
 pygame.display.set_caption("Avengers the game")
-
-vec=pygame.math.Vector2
-#Propriedades do Player
-PLAYER_ACC=0.5
-PLAYER_FRICTION=-0.1
-PLAYER_JUMP = -15
 
 class Tile(pygame.sprite.Sprite):
     # Construtor da classe.
@@ -74,7 +68,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         # Centraliza embaixo da tela.
         self.rect.centerx = WIDTH / 3
-        self.rect.bottom = HEIGHT - 10
+        self.rect.bottom = HEIGHT + 30
         # Velocidade
         self.speedx = 0
         self.speedy = 0
@@ -126,15 +120,13 @@ class Mob(pygame.sprite.Sprite):
         self.px = 1052
         # Sorteia um lugar inicial em y
 #        self.py = random.randrange(-100, -40) 
-        self.py = HEIGHT - 170
-        self.rect.x = self.px 
-        self.rect.y = self.py               
+        self.rect.x = 1052
+        self.rect.y = HEIGHT - 170          
         # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = int(self.rect.width * .85 / 2)    
     def update(self):
-        self.px += self.speedx
-        self.py += self.speedy              
-        print("ohaio") 
+        self.rect.x += self.speedx
+        self.rect.y += self.speedy              
         # Se o meteoro passar do final da tela, volta para cima
   #      if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 20:
   #          self.rect.x = random.randrange(WIDTH - self.rect.width)
@@ -224,10 +216,10 @@ def game_screen(screen):
     bullets = pygame.sprite.Group()
 
 # Cria 8 meteoros e adiciona no grupo thanos
- #   for i in range(20):
- #       m = Mob(assets["mob_img"])
- #       all_sprites.add(m)
- #       mobs.add(m)
+    for i in range(20):
+        m = Mob(assets["mob_img"])
+        all_sprites.add(m)
+        mobs.add(m)
 
 
     world_sprites = pygame.sprite.Group()
