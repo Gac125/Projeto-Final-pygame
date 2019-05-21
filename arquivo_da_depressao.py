@@ -31,28 +31,50 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # Nome do jogo
 pygame.display.set_caption("Avengers the game")
 
+BLOCK = 0
+EMPTY = -1
+
+MAP = [
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, EMPTY, EMPTY],
+    [BLOCK, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, BLOCK, EMPTY, EMPTY, EMPTY, BLOCK, BLOCK],
+    [EMPTY, EMPTY, BLOCK, EMPTY, BLOCK, BLOCK, BLOCK, BLOCK, EMPTY, BLOCK, BLOCK, BLOCK],
+    [BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK],
+    [BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK, BLOCK],
+]
+
+
 class Tile(pygame.sprite.Sprite):
     # Construtor da classe.
-    def __init__(self, tile_img, x, y):
+    # Construtor da classe.
+    def __init__(self, tile_img, row, column):
         # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self)
+
         # Aumenta o tamanho do tile.
         tile_img = pygame.transform.scale(tile_img, (TILE_SIZE, TILE_SIZE))
+
         # Define a imagem do tile.
         self.image = tile_img
-        self.image.set_colorkey(WHITE)
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
+
         # Posiciona o tile
-        self.rect.x = x
-        self.rect.y = y
-        self.speedx = 0             
-    def update(self):
-        self.rect.x += self.speedx
+        self.rect.x = TILE_SIZE * column
+        self.rect.y = TILE_SIZE * row
 
 class Player(pygame.sprite.Sprite):
     # Construtor da classe.
-    def __init__(self, player_img):     
+    def __init__(self, player_img, row, column,  blocks):     
         # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self) 
         # Carregando a imagem de fundo.
@@ -66,6 +88,11 @@ class Player(pygame.sprite.Sprite):
         self.image.set_colorkey(WHITE)
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
+
+        self.blocks = blocks
+
+        self.rect.x = column * TILE_SIZE
+        self.rect.bottom = row * TILE_SIZE
         # Centraliza embaixo da tela.
         self.rect.centerx = WIDTH / 3
         self.rect.bottom = HEIGHT + 30
@@ -82,10 +109,37 @@ class Player(pygame.sprite.Sprite):
             self.state = FALLING
         self.rect.y +=self.speedy
 
-        if self.rect.bottom > GROUND:
-            self.rect.bottom = GROUND
-            self.speedy = 0
-            self.state = STILL
+        collisions = pygame.sprite.spritecollide(self, self.blocks, False)
+
+        for collision in collisions:
+        # Estava indo para baixo
+            if self.speedy > 0:
+                self.rect.bottom = collision.rect.top
+                # Se colidiu com algo, para de cair
+                self.speedy = 0
+                # Atualiza o estado para parado
+                self.state = STILL
+            # Estava indo para cima
+            elif self.speedy < 0:
+                self.rect.top = collision.rect.bottom
+                # Se colidiu com algo, para de cair
+                self.speedy = 0
+                # Atualiza o estado para parado
+                self.state = STILL
+
+            if self.rect.bottom > GROUND:
+                self.rect.bottom = GROUND
+                self.speedy = 0
+                self.state = STILL
+
+        for collision in collisions:
+        # Estava indo para a direita
+            if self.speedx > 0:
+               self.rect.right = collision.rect.left
+        # Estava indo para a esquerda
+            elif self.speedx < 0:
+               self.rect.left = collision.rect.right
+
 
     def jump(self):
         # Só pode pular se ainda não estiver pulando ou caindo
@@ -178,7 +232,8 @@ def load_assets(img_dir):
     assets["mob_img"] = pygame.image.load(path.join(Thanos, "Stance_Thanos.png")).convert()
     assets["bullet_img"] = pygame.image.load(path.join(Homem, "Propulsor2.png")).convert()
     assets["background"] = pygame.image.load(path.join(fundo, 'houses31.png')).convert()
-    assets["block_img"] = pygame.image.load(path.join(img_dir, 'Dano_Ultron.png')).convert()
+    assets["block_img"] = pygame.image.load(path.join(img_dir, 'block.png')).convert()
+    assets["player_attack"] = pygame.image.load(path.join(Homem, "Ataque propulsor.png")).convert()
 #    assets["title"] = pygame.image.load(path.join(tela_I, 'Tela_inicio.png')).convert()
     return assets
 
@@ -196,9 +251,10 @@ def game_screen(screen):
 
     pygame.display.set_caption("Avengers the Game")
 
+    blocks = pygame.sprite.Group()
  #   manager = GameManager()
 
-    player = Player(assets["player_img"])
+    player = Player(assets["player_img"], blocks)
 
 # Cria um grupo de todos os sprites e adiciona a nave.
     all_sprites = pygame.sprite.Group()
@@ -224,15 +280,22 @@ def game_screen(screen):
 
     world_sprites = pygame.sprite.Group()
     # Cria blocos espalhados em posições aleatórias do mapa
-    for i in range(INITIAL_BLOCKS):
-        block_x = random.randint(0, WIDTH)
-        block_y = random.randint(0, int(HEIGHT * 0.25))
-        block = Tile(assets["block_img"], block_x, block_y)
-        world_sprites.add(block)
+   # for i in range(INITIAL_BLOCKS):
+    #    block_x = random.randint(0, WIDTH)
+    #    block_y = random.randint(0, int(HEIGHT * 0.25))
+    #    block_y = HEIGHT - 30
+    #    block = Tile(assets["block_img"], block_x, block_y)
+    #    world_sprites.add(block)
         # Adiciona também no grupo de todos os sprites para serem atualizados e desenhados
-        all_sprites.add(block)
+    #    all_sprites.add(block)
 
-
+    for row in range(len(MAP)):
+        for column in range(len(MAP[row])):
+            tile_type = MAP[row][column]
+            if tile_type == BLOCK:
+                tile = Tile(assets[tile_type], row, column)
+                all_sprites.add(tile)
+                blocks.add(tile)
 
 
 #try:  
@@ -263,8 +326,10 @@ def game_screen(screen):
             hits = pygame.sprite.spritecollide(player, mobs, False, pygame.sprite.collide_circle)
             ht=pygame.sprite.spritecollide(player, world_sprites, False, pygame.sprite.collide_circle)            
 
-            if hits or ht:
+            if hits: #or ht:
                state = DONE
+            if ht: 
+                player.rect.centerx = ht[0].rect.top
             # Verifica se apertou alguma tecla.
             if event.type == pygame.KEYDOWN:
                 # Dependendo da tecla, altera o estado do jogador.
