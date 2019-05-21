@@ -33,7 +33,7 @@ GRAVITY = 2
 # Define a velocidade inicial no pulo
 JUMP_SIZE = 30
 # Define a altura do chão
-GROUND = HEIGHT * 5 // 6
+GROUND = HEIGHT * 6.2 // 6
 
 # Define estados possíveis do jogador
 STILL = 0
