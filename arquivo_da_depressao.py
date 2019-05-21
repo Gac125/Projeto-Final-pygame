@@ -1,5 +1,5 @@
 """
-Jogo Marvel - Giovanna Alves, Giulia Castro e Pedro CÃ©lia
+Jogo Marvel - Giovanna Alves, Giulia Castro e Pedro Célia
 """
 import pygame
 import random
