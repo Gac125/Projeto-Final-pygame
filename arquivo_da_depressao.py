@@ -44,7 +44,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         # Centraliza embaixo da tela.
         self.rect.centerx = WIDTH / 3
-        self.rect.bottom = HEIGHT + 30
+        self.rect.bottom = HEIGHT 
         # Velocidade
         self.speedx = 0
         self.speedy = 0
@@ -259,9 +259,10 @@ def game_screen(screen):
             # Precisamos desenhar o fundo à direita
             background_rect2.x += background_rect2.width
         #A cada loop, redesenha o fundo e os sprites
-        screen.blit(background, background_rect)
-        all_sprites.draw(screen)
-        
+              
+        screen.blit(background, background_rect2)
+        all_sprites.draw(screen) 
+        pygame.display.flip()
         # Depois de desenhar tudo, inverte o display.
         pygame.display.flip()
 
