@@ -140,6 +140,7 @@ def load_assets(img_dir):
     assets["bullet_img3"] = pygame.image.load(path.join(img_dir,"Propulsor3.png")).convert()
     assets["background"] = pygame.image.load(path.join(fundo, 'houses31.png')).convert()
     assets["block_img"] = pygame.image.load(path.join(img_dir, 'Dano_Ultron.png')).convert()
+    assets["score_font"] = pygame.font.Font(path.join(fnt_dir, "PressStart2P.ttf"), 28)
     return assets
 
 def game_screen(screen):
@@ -178,6 +179,9 @@ def game_screen(screen):
     PLAYING = 0
     DONE = 2
     
+    score = 0
+    lives = 3
+    
     state = PLAYING
     while state != DONE:
     #while running:
@@ -190,11 +194,18 @@ def game_screen(screen):
             # O meteoro e destruido e precisa ser recriado
                 all_sprites.add(m)
                 mobs.add(m)
+                score += 100
             # Verifica se houve colisão entre o player e o meteoro ou com bola de ferro
             hits = pygame.sprite.spritecollide(player, mobs, False)
             ht=pygame.sprite.spritecollide(player, world_sprites, False)            
             if hits or ht:
-               state = DONE
+               lives -= 1
+            if lives == 0:
+                state = DONE
+            else:
+                state = PLAYING
+                player = Player(assets["player_img"])
+                all_sprites.add(player)
             # Verifica se apertou alguma tecla.
             if event.type == pygame.KEYDOWN:
                 # Dependendo da tecla, altera o estado do jogador.
@@ -247,6 +258,13 @@ def game_screen(screen):
                 all_sprites.add(new_block)
                 world_sprites.add(new_block)
         # A cada loop, redesenha o fundo e os sprites
+        
+        if lives == 0:
+            state = DONE
+        else:
+            state = PLAYING
+            player = Player(assets["player_img"])
+            all_sprites.add(player)
         screen.fill(BLACK)      
         # Desenha o fundo e uma cópia para a direita. Assumimos que a imagem selecionada ocupa pelo menos o tamanho da janela.
         # Além disso, ela deve ser cíclica, ou seja, o lado esquerdo deve ser continuação do direito.
@@ -254,17 +272,25 @@ def game_screen(screen):
         # Desenhamos a imagem novamente, mas deslocada em x.
         background_rect2 = background_rect.copy()
         if background_rect.left > 0:
-            # Precisamos desenhar o fundo à esquerda
             background_rect2.x -= background_rect2.width
         else:
-            # Precisamos desenhar o fundo à direita
             background_rect2.x += background_rect2.width
-        #A cada loop, redesenha o fundo e os sprites
+        
               
         screen.blit(background, background_rect2)
         all_sprites.draw(screen) 
         pygame.display.flip()
-        # Depois de desenhar tudo, inverte o display.
+        
+        text_surface = score_font.render("{:08d}".format(score), True, YELLOW)
+        text_rect = text_surface.get_rect()
+        text_rect.midtop = (WIDTH / 2,  10)
+        screen.blit(text_surface, text_rect)
+        
+        text_surface = score_font.render(chr(9829) * lives, True, RED)
+        text_rect = text_surface.get_rect()
+        text_rect.bottomleft = (10, HEIGHT - 10)
+        screen.blit(text_surface, text_rect)
+    
         pygame.display.flip()
 
 pygame.init()
