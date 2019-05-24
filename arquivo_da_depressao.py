@@ -28,6 +28,23 @@ class Tile(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.speedx
 
+class Platform(pygame.sprite.Sprite):
+    def __init__(self, buraco_img):
+        # Construtor da classe pai (Sprite).
+        pygame.sprite.Sprite.__init__(self)
+        # Aumenta o tamanho do tile.
+        buraco_img = pygame.transform.scale(buraco_img, (150, 130))
+        # Define a imagem do tile.
+        self.image = buraco_img
+        # Detalhes sobre o posicionamento.
+        self.rect = self.image.get_rect()
+        # Posiciona o tile
+        self.rect.x = 1200
+        self.rect.y = GROUND
+        self.speedx = 0    
+    def update(self):
+        self.rect.x += self.speedx    
+
 class Player(pygame.sprite.Sprite):
     # Construtor da classe.
     def __init__(self, player_img):     
@@ -140,6 +157,7 @@ def load_assets(img_dir):
     assets["bullet_img3"] = pygame.image.load(path.join(img_dir,"Propulsor3.png")).convert()
     assets["background"] = pygame.image.load(path.join(fundo, 'houses31.png')).convert()
     assets["block_img"] = pygame.image.load(path.join(img_dir, 'Dano_Ultron.png')).convert()
+    assets["buraco_img"] = pygame.image.load(path.join(img_dir, 'Buraco.png')).convert()
     assets["score_font"] = pygame.font.Font(path.join(fnt_dir, "PressStart2P.ttf"), 28)
     return assets
 
@@ -161,6 +179,8 @@ def game_screen(screen):
     mobs = pygame.sprite.Group()
 # Cria um grupo para tiros
     bullets = pygame.sprite.Group()
+# Cria buracos com o passar do tempo
+    buracos = pygame.sprite.Group()
 # Cria 8 meteoros e adiciona no grupo thanos
     for i in range(20):
         m = Mob(assets["mob_img"])
@@ -183,6 +203,8 @@ def game_screen(screen):
     lives = 3
     
     state = PLAYING
+    tempo = pygame.time.get_ticks()
+    
     while state != DONE:
     #while running:
         clock.tick(FPS)
@@ -239,8 +261,16 @@ def game_screen(screen):
                 elif event.key == pygame.K_DOWN:
                     player.speedy = 0           
         for block in world_sprites:
-            block.speedx = -player.speedx        
+            block.speedx = -player.speedx 
+            
+        now=pygame.time.get_ticks()
+        if now - tempo > 7000:
+            buraco=Platform(assets["buraco_img"])
+            all_sprites.add(buraco)
+            buracos.add(buraco)
+            tempo=pygame.time.get_ticks()
         all_sprites.update()
+        
         background_rect.x -= player.speedx
         # Se o fundo saiu da janela, faz ele voltar para dentro.Verifica se o fundo saiu para a esquerda
         if background_rect.right < 0:
