@@ -83,6 +83,7 @@ class Player(pygame.sprite.Sprite):
         if self.state == STILL:
             self.speedy -= JUMP_SIZE
             self.state = JUMPING  
+
 class Mob(pygame.sprite.Sprite): 
     # Construtor da classe.
     def __init__(self, mob_img):      
@@ -103,7 +104,7 @@ class Mob(pygame.sprite.Sprite):
         self.rect.x = 1052
         self.rect.y = HEIGHT - 170          
         # Melhora a colisão estabelecendo um raio de um circulo
-        self.radius = int(self.rect.width * .85 / 2)    
+        self.radius = int(self.rect.width * 1 / 2)    
     def update(self):
         self.rect.x += self.speedx
         self.rect.y += self.speedy                   
@@ -214,7 +215,7 @@ def game_screen(screen):
             if event.type == pygame.QUIT:
                 state = DONE       
          # Verifica se houve colisão entre propulsor e o meteoro
-            hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
+            hits = pygame.sprite.groupcollide(mobs, bullets, True, False)
             for hit in hits: # Pode haver mais de um
             # O meteoro e destruido dps recriado
                 m = Mob(assets["mob_img"])
