@@ -1,10 +1,8 @@
-"""
-Jogo Marvel - Giovanna Alves, Giulia Castro e Pedro Célia
-"""
+# -*- coding: utf-8 -*-
 import pygame
 import random
 from os import path
-from config_depressao import img_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, GREY, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING
+from config_depressao import img_dir, fnt_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, GREY, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING
 
 # Nome do jogo
 pygame.display.set_caption("Avengers the game")
@@ -161,6 +159,7 @@ def load_assets(img_dir):
     assets["score_font"] = pygame.font.Font(path.join(fnt_dir, "PressStart2P.ttf"), 28)
     return assets
 
+
 def game_screen(screen):
     assets = load_assets(img_dir)
     clock = pygame.time.Clock()
@@ -169,6 +168,7 @@ def game_screen(screen):
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Avengers the Game")
     player = Player(assets["player_img"])
+    score_font = assets["score_font"]
 # Cria um grupo de todos os sprites e adiciona a nave.
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
@@ -238,7 +238,7 @@ def game_screen(screen):
                 elif event.key == pygame.K_DOWN:
                     player.speedy -= SPEED_Y
                 elif event.key == ord('d'):
-                    bullet = Bullet(player.rect.centerx, player.rect.top,2,assets["bullet_img"])
+                    bullet = Bullet(player.rect.centerx, player.rect.top,2,assets["bullet_img1"])
                     all_sprites.add(bullet)
                     bullets.add(bullet)      
                 elif event.key == ord('w'):
@@ -289,12 +289,6 @@ def game_screen(screen):
                 world_sprites.add(new_block)
         # A cada loop, redesenha o fundo e os sprites
         
-        if lives == 0:
-            state = DONE
-        else:
-            state = PLAYING
-            player = Player(assets["player_img"])
-            all_sprites.add(player)
         screen.fill(BLACK)      
         # Desenha o fundo e uma cópia para a direita. Assumimos que a imagem selecionada ocupa pelo menos o tamanho da janela.
         # Além disso, ela deve ser cíclica, ou seja, o lado esquerdo deve ser continuação do direito.
