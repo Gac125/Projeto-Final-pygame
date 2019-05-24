@@ -2,7 +2,7 @@
 import pygame
 import random
 from os import path
-from config_depressao import img_dir, TITULO, fnt_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, GREY, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING
+from config_depressao import img_dir, fnt_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING
 
 
 class Tile(pygame.sprite.Sprite):
@@ -135,15 +135,6 @@ class Bullet(pygame.sprite.Sprite):
         # Se o tiro passar do inicio da tela, morre.
         if self.rect.centerx < 0:
             self.kill()
-#
-#class platform(pygame.sprite.Sprite):
-#    def __init__(self, x, y, w, h):
-#        pygame.sprite.Sprite.__init__(self)
-#        self.image = pygame.Surface((w, h))
-#        self.image.fill(GREY)
-#        self.rect = self.image.get_rect()
-#        self.rect.x = x
-#        self.rect.y = y
 
 def load_assets(img_dir):
     Homem = path.join(img_dir, 'Iron Man')
@@ -174,14 +165,11 @@ def game_screen(screen):
 # Cria um grupo de todos os sprites e adiciona a nave.
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
-#Cria um gupo de plataforma
-#    pl = platform(0, HEIGHT - 25, WIDTH, 100)
-#    all_sprites.add(pl)
-# Cria um grupo sÃ³ do thanos
+# Cria um grupo do thanos
     mobs = pygame.sprite.Group()
 # Cria um grupo para tiros
     bullets = pygame.sprite.Group()
-# Cria buracos com o passar do tempo
+# Cria um grupo para os buracos
     buracos = pygame.sprite.Group()
 # Cria 8 meteoros e adiciona no grupo thanos
     for i in range(1):
@@ -199,12 +187,12 @@ def game_screen(screen):
         all_sprites.add(block)
 
     PLAYING = 0
-    DONE = 1
-    
+    DONE = 1 
     score = 0
     lives = 3
     #Define estado atual
     state = PLAYING
+    #Começa a contar o tempo
     tempo = pygame.time.get_ticks()
     while state != DONE:      
         # Ajusta a velocidade do jogo.
@@ -222,10 +210,9 @@ def game_screen(screen):
                 mobs.add(m)
                 score += 100
             # Verifica se houve colisão entre o player e o meteoro ou com bola de ferro
-            hits = pygame.sprite.spritecollide(player, mobs, False)
-                
-            #ht=pygame.sprite.spritecollide(player, world_sprites, False, pygame.sprite.collide_circle)
+            hits = pygame.sprite.spritecollide(player, mobs, False)              
             ht=pygame.sprite.spritecollide(player, world_sprites, True)
+            #Tira vida do Player caso haja colisão
             if hits or ht:
                 lives -= 1  
                 print("perdeu vida {0}".format(lives))
@@ -268,21 +255,23 @@ def game_screen(screen):
         for block in world_sprites:
             block.speedx = -player.speedx        
         now=pygame.time.get_ticks()
+        #Faz os buracos aparecerem a cada 7 segundos
         if now - tempo > 7000:
             buraco=Platform(assets["buraco_img"])
             all_sprites.add(buraco)
             buracos.add(buraco)
             tempo=pygame.time.get_ticks()
-            
-        caiu=pygame.sprite.spritecollide(player, buracos, False)
-        if caiu:
-            lives -= 1                
-            if lives == 0:
-                state = DONE
+#        #Verifica colisão com o buraco    
+#        caiu=pygame.sprite.spritecollide(player, buracos, False)
+#        if caiu:
+#            lives -= 1                
+#            if lives == 0:
+#                state = DONE
         # Atualiza a acao de cad a sprite. O grupo chama o método update() de cada Sprite dentre dele.
         all_sprites.update()
         # Atualiza a posição da imagem de fundo.
         background_rect.x -= player.speedx
+        #Faz os buracos andarem conforme o fundo
         for b in buracos:
             b.speedx=(-1)*player.speedx
         # Se o fundo saiu da janela, faz ele voltar para dentro.Verifica se o fundo saiu para a esquerda
