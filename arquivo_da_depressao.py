@@ -2,10 +2,8 @@
 import pygame
 import random
 from os import path
-from config_depressao import img_dir, fnt_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, GREY, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING
+from config_depressao import img_dir, TITULO, fnt_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, GREY, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING
 
-# Nome do jogo
-pygame.display.set_caption("Avengers the game")
 
 class Tile(pygame.sprite.Sprite):
     # Construtor da classe.
@@ -63,24 +61,28 @@ class Player(pygame.sprite.Sprite):
         # Velocidade
         self.speedx = 0
         self.speedy = 0
-        # Melhora a colis�o estabelecendo um raio de um circulo
+        # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = 25
     def update(self):
         self.speedy += GRAVITY
+        # Atualiza o estado para caindo
         if self.speedy > 0:
             self.state = FALLING
-        self.rect.y +=self.speedy
+        self.rect.y += self.speedy
+        # Se bater no chão, para de cair
         if self.rect.bottom > GROUND:
+            # Reposiciona para a posição do chão
             self.rect.bottom = GROUND
+            # Para de cair
             self.speedy = 0
+            # Atualiza o estado para parado
             self.state = STILL
-
+    # Método que faz o personagem pular
     def jump(self):
-        # S� pode pular se ainda n�o estiver pulando ou caindo
+        # Só pode pular se ainda não estiver pulando ou caindo
         if self.state == STILL:
             self.speedy -= JUMP_SIZE
-            self.state = JUMPING             
-
+            self.state = JUMPING  
 class Mob(pygame.sprite.Sprite): 
     # Construtor da classe.
     def __init__(self, mob_img):      
@@ -100,7 +102,7 @@ class Mob(pygame.sprite.Sprite):
         # Sorteia um lugar inicial em y
         self.rect.x = 1052
         self.rect.y = HEIGHT - 170          
-        # Melhora a colis�o estabelecendo um raio de um circulo
+        # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = int(self.rect.width * .85 / 2)    
     def update(self):
         self.rect.x += self.speedx
@@ -133,15 +135,15 @@ class Bullet(pygame.sprite.Sprite):
         # Se o tiro passar do inicio da tela, morre.
         if self.rect.centerx < 0:
             self.kill()
-
-class platform(pygame.sprite.Sprite):
-    def __init__(self, x, y, w, h):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((w, h))
-        self.image.fill(GREY)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+#
+#class platform(pygame.sprite.Sprite):
+#    def __init__(self, x, y, w, h):
+#        pygame.sprite.Sprite.__init__(self)
+#        self.image = pygame.Surface((w, h))
+#        self.image.fill(GREY)
+#        self.rect = self.image.get_rect()
+#        self.rect.x = x
+#        self.rect.y = y
 
 def load_assets(img_dir):
     Homem = path.join(img_dir, 'Iron Man')
@@ -173,21 +175,21 @@ def game_screen(screen):
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
 #Cria um gupo de plataforma
-    pl = platform(0, HEIGHT - 25, WIDTH, 100)
-    all_sprites.add(pl)
-# Cria um grupo só do thanos
+#    pl = platform(0, HEIGHT - 25, WIDTH, 100)
+#    all_sprites.add(pl)
+# Cria um grupo sÃ³ do thanos
     mobs = pygame.sprite.Group()
 # Cria um grupo para tiros
     bullets = pygame.sprite.Group()
 # Cria buracos com o passar do tempo
     buracos = pygame.sprite.Group()
 # Cria 8 meteoros e adiciona no grupo thanos
-    for i in range(20):
+    for i in range(1):
         m = Mob(assets["mob_img"])
         all_sprites.add(m)
         mobs.add(m)
     world_sprites = pygame.sprite.Group() 
-    # Cria blocos espalhados em posi��es aleat�rias do mapa
+    # Cria blocos espalhados em posições aleatórias do mapa
     for i in range(INITIAL_BLOCKS):
         block_x = random.randint(0, WIDTH)
         block_y = random.randint(0, int(HEIGHT * 0.25))
@@ -197,37 +199,38 @@ def game_screen(screen):
         all_sprites.add(block)
 
     PLAYING = 0
-    DONE = 2
+    DONE = 1
     
     score = 0
     lives = 3
-    
+    #Define estado atual
     state = PLAYING
     tempo = pygame.time.get_ticks()
-    
-    while state != DONE:
-    #while running:
+    while state != DONE:      
+        # Ajusta a velocidade do jogo.
         clock.tick(FPS)
         for event in pygame.event.get():
+            # Verifica se foi fechado.
             if event.type == pygame.QUIT:
-                state = DONE
+                state = DONE       
+         # Verifica se houve colisão entre propulsor e o meteoro
             hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
             for hit in hits: # Pode haver mais de um
-            # O meteoro e destruido e precisa ser recriado
+            # O meteoro e destruido dps recriado
+                m = Mob(assets["mob_img"])
                 all_sprites.add(m)
                 mobs.add(m)
                 score += 100
-            # Verifica se houve colis�o entre o player e o meteoro ou com bola de ferro
+            # Verifica se houve colisão entre o player e o meteoro ou com bola de ferro
             hits = pygame.sprite.spritecollide(player, mobs, False)
-            ht=pygame.sprite.spritecollide(player, world_sprites, False)            
+                
+            #ht=pygame.sprite.spritecollide(player, world_sprites, False, pygame.sprite.collide_circle)
+            ht=pygame.sprite.spritecollide(player, world_sprites, True)
             if hits or ht:
-               lives -= 1
+                lives -= 1  
+                print("perdeu vida {0}".format(lives))
             if lives == 0:
                 state = DONE
-            else:
-                state = PLAYING
-                player = Player(assets["player_img"])
-                all_sprites.add(player)
             # Verifica se apertou alguma tecla.
             if event.type == pygame.KEYDOWN:
                 # Dependendo da tecla, altera o estado do jogador.
@@ -260,18 +263,28 @@ def game_screen(screen):
                     player.jump()
                 elif event.key == pygame.K_DOWN:
                     player.speedy = 0           
+        # Depois de processar os eventos, como o jogador vai ficar parado, o fundo e os objetos no mundo devem se mover 
+        #com a velocidade do personagem no sentido oposto.
         for block in world_sprites:
-            block.speedx = -player.speedx 
-            
+            block.speedx = -player.speedx        
         now=pygame.time.get_ticks()
         if now - tempo > 7000:
             buraco=Platform(assets["buraco_img"])
             all_sprites.add(buraco)
             buracos.add(buraco)
             tempo=pygame.time.get_ticks()
+            
+        caiu=pygame.sprite.spritecollide(player, buracos, False)
+        if caiu:
+            lives -= 1                
+            if lives == 0:
+                state = DONE
+        # Atualiza a acao de cad a sprite. O grupo chama o método update() de cada Sprite dentre dele.
         all_sprites.update()
-        
+        # Atualiza a posição da imagem de fundo.
         background_rect.x -= player.speedx
+        for b in buracos:
+            b.speedx=(-1)*player.speedx
         # Se o fundo saiu da janela, faz ele voltar para dentro.Verifica se o fundo saiu para a esquerda
         if background_rect.right < 0:
             background_rect.x += background_rect.width            
@@ -280,30 +293,30 @@ def game_screen(screen):
             background_rect.x -= background_rect.width      
         for block in world_sprites:
             if block.rect.right < 0:
-                # Destr�i o bloco e cria um novo no final da tela
+                # Destrói o bloco e cria um novo no final da tela
                 block.kill()
                 block_x = random.randint(WIDTH, int(WIDTH * 1.5))
                 block_y = random.randint(0, int(HEIGHT * 0.75))
                 new_block = Tile(assets["block_img"], block_x, block_y)
                 all_sprites.add(new_block)
                 world_sprites.add(new_block)
+            
         # A cada loop, redesenha o fundo e os sprites
-        
         screen.fill(BLACK)      
-        # Desenha o fundo e uma c�pia para a direita. Assumimos que a imagem selecionada ocupa pelo menos o tamanho da janela.
-        # Al�m disso, ela deve ser c�clica, ou seja, o lado esquerdo deve ser continua��o do direito.
+        # Desenha o fundo e uma cópia para a direita. Assumimos que a imagem selecionada ocupa pelo menos o tamanho da janela.
+        # Além disso, ela deve ser cíclica, ou seja, o lado esquerdo deve ser continuação do direito.
         screen.blit(background, background_rect)        
         # Desenhamos a imagem novamente, mas deslocada em x.
         background_rect2 = background_rect.copy()
         if background_rect.left > 0:
+            # Precisamos desenhar o fundo à esquerda
             background_rect2.x -= background_rect2.width
         else:
+            # Precisamos desenhar o fundo à direita
             background_rect2.x += background_rect2.width
-        
-              
+            
         screen.blit(background, background_rect2)
         all_sprites.draw(screen) 
-        pygame.display.flip()
         
         text_surface = score_font.render("{:08d}".format(score), True, YELLOW)
         text_rect = text_surface.get_rect()
@@ -314,8 +327,6 @@ def game_screen(screen):
         text_rect = text_surface.get_rect()
         text_rect.bottomleft = (10, HEIGHT - 10)
         screen.blit(text_surface, text_rect)
-    
+        
         pygame.display.flip()
 
-pygame.init()
-pygame.mixer.init()

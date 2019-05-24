@@ -10,6 +10,8 @@ WIDTH = 1052 # Largura da tela
 HEIGHT = 650 # Altura da tela
 FPS = 60 # Frames por segundo
 
+TITULO = "Avengers The Game"
+
 # Define algumas variáveis com as cores básicas
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
