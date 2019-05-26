@@ -221,7 +221,6 @@ def game_screen(screen):
                 state = DONE
             # Verifica se apertou alguma tecla.
             if event.type == pygame.KEYDOWN:
-                # Dependendo da tecla, altera o estado do jogador.
                 if event.key == pygame.K_LEFT:
                     player.speedx -= SPEED_X
                 elif event.key == pygame.K_RIGHT:
@@ -242,7 +241,6 @@ def game_screen(screen):
                     bullets.add(bullet)          
             # Verifica se soltou alguma tecla.
             if event.type == pygame.KEYUP:
-                # Dependendo da tecla, altera o estado do jogador.
                 if event.key == pygame.K_LEFT:
                     player.speedx += SPEED_X
                 elif event.key == pygame.K_RIGHT:
@@ -263,11 +261,11 @@ def game_screen(screen):
             buracos.add(buraco)
             tempo=pygame.time.get_ticks()
 #        #Verifica colisão com o buraco    
-#        caiu=pygame.sprite.spritecollide(player, buracos, False)
-#        if caiu:
-#            lives -= 1                
-#            if lives == 0:
-#                state = DONE
+        caiu=pygame.sprite.spritecollide(player, buracos, False)
+        if caiu:
+            lives -= 1                
+            if lives == 0:
+                state = DONE
         # Atualiza a acao de cad a sprite. O grupo chama o método update() de cada Sprite dentre dele.
         all_sprites.update()
         # Atualiza a posição da imagem de fundo.
