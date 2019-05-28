@@ -3,7 +3,7 @@ import pygame
 import random
 from os import path
 from config_depressao import img_dir, fnt_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING
-
+FALLING_BURACO = 3
 
 class Tile(pygame.sprite.Sprite):
     # Construtor da classe.
@@ -35,8 +35,8 @@ class Platform(pygame.sprite.Sprite):
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
         # Posiciona o tile
-        self.rect.x = 1200
-        self.rect.y = GROUND
+        self.rect.x = 800
+        self.rect.y = HEIGHT - 100
         self.speedx = 0    
     def update(self):
         self.rect.x += self.speedx    
@@ -50,7 +50,7 @@ class Player(pygame.sprite.Sprite):
         self.state = STILL
         self.image = player_img
         # Diminuindo o tamanho da imagem.
-        self.image = pygame.transform.scale(player_img, (200,175))
+        self.image = pygame.transform.scale(player_img, (200,150))
         # Deixando transparente.
         self.image.set_colorkey(WHITE)
         # Detalhes sobre o posicionamento.
@@ -62,21 +62,22 @@ class Player(pygame.sprite.Sprite):
         self.speedx = 0
         self.speedy = 0
         # Melhora a colisão estabelecendo um raio de um circulo
-        self.radius = 25
+#        self.radius = 15
     def update(self):
         self.speedy += GRAVITY
         # Atualiza o estado para caindo
-        if self.speedy > 0:
+        if self.speedy > 0 and self.state!= FALLING_BURACO:
             self.state = FALLING
         self.rect.y += self.speedy
-        # Se bater no chão, para de cair
-        if self.rect.bottom > GROUND:
-            # Reposiciona para a posição do chão
-            self.rect.bottom = GROUND
-            # Para de cair
-            self.speedy = 0
-            # Atualiza o estado para parado
-            self.state = STILL
+        if self.state != FALLING_BURACO:
+            # Se bater no chão, para de cair
+            if self.rect.bottom > GROUND:
+                # Reposiciona para a posição do chão
+                self.rect.bottom = GROUND
+                # Para de cair
+                self.speedy = 0
+                # Atualiza o estado para parado
+                self.state = STILL
     # Método que faz o personagem pular
     def jump(self):
         # Só pode pular se ainda não estiver pulando ou caindo
@@ -104,7 +105,7 @@ class Mob(pygame.sprite.Sprite):
         self.rect.x = 1052
         self.rect.y = HEIGHT - 170          
         # Melhora a colisão estabelecendo um raio de um circulo
-        self.radius = int(self.rect.width * 1 / 2)    
+#        self.radius = int(self.rect.width * 1 / 2)    
     def update(self):
         self.rect.x += self.speedx
         self.rect.y += self.speedy                   
@@ -136,7 +137,7 @@ class Bullet(pygame.sprite.Sprite):
         # Se o tiro passar do inicio da tela, morre.
         if self.rect.centerx < 0:
             self.kill()
-
+            
 def load_assets(img_dir):
     Homem = path.join(img_dir, 'Iron Man')
     Thanos = path.join(img_dir, 'Thanos')
@@ -260,11 +261,12 @@ def game_screen(screen):
             all_sprites.add(buraco)
             buracos.add(buraco)
             tempo=pygame.time.get_ticks()
-#        #Verifica colisão com o buraco    
+        #Verifica colisão com o buraco    
         caiu=pygame.sprite.spritecollide(player, buracos, False)
         if caiu:
-            lives -= 1                
-            if lives == 0:
+            player.state = FALLING_BURACO
+            delay = pygame.time.get_ticks()
+            if delay >= 2000:            
                 state = DONE
         # Atualiza a acao de cad a sprite. O grupo chama o método update() de cada Sprite dentre dele.
         all_sprites.update()
