@@ -53,6 +53,9 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(player_img, (200,150))
         # Deixando transparente.
         self.image.set_colorkey(WHITE)
+        
+        self.mask = pygame.mask.from_surface(self.image)
+        
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
         # Centraliza embaixo da tela.
@@ -240,9 +243,7 @@ def game_screen(screen):
                     bullet = Bullet(player.rect.centerx, player.rect.top,0,assets["bullet_img2"])
                     all_sprites.add(bullet)
                     bullets.add(bullet)          
-            # Verifica se soltou alguma tecla.
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
+                elif event.key == pygame.K_LEFT:
                     player.speedx += SPEED_X
                 elif event.key == pygame.K_RIGHT:
                     player.speedx -= SPEED_X
@@ -262,7 +263,7 @@ def game_screen(screen):
             buracos.add(buraco)
             tempo=pygame.time.get_ticks()
         #Verifica colisão com o buraco    
-        caiu=pygame.sprite.spritecollide(player, buracos, False)
+        caiu=pygame.sprite.spritecollide(player, buracos, False, pygame.sprite.collide_rect)
         if caiu:
             player.state = FALLING_BURACO
             delay = pygame.time.get_ticks()
