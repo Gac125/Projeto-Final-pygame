@@ -1,7 +1,5 @@
 import pygame
-import random
 from os import path
-
 from config_depressao import img_dir, BLACK, FPS, GAME, QUIT
 
 def init_avengers(screen):
