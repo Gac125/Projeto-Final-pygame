@@ -2,8 +2,7 @@
 import pygame
 import random
 from os import path
-from config_depressao import img_dir, fnt_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING
-FALLING_BURACO = 3
+from config_depressao import img_dir, fnt_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING, FALLING_BURACO
 
 class Tile(pygame.sprite.Sprite):
     # Construtor da classe.
@@ -36,7 +35,7 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         # Posiciona o tile
         self.rect.x = 800
-        self.rect.y = HEIGHT - 100
+        self.rect.y = HEIGHT - 50
         self.speedx = 0    
     def update(self):
         self.rect.x += self.speedx    
@@ -53,9 +52,8 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(player_img, (200,150))
         # Deixando transparente.
         self.image.set_colorkey(WHITE)
-        
+        #Criando uma máscara para o Player
         self.mask = pygame.mask.from_surface(self.image)
-        
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
         # Centraliza embaixo da tela.
@@ -98,20 +96,19 @@ class Mob(pygame.sprite.Sprite):
         # Deixando transparente.
         self.image.set_colorkey(WHITE)       
         # Sorteia uma velocidade inicial
-        self.speedx = random.randrange(-3, 3)
+        self.speedx = random.randrange(1, 3)
         self.speedy = 0       
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
-        # Sorteia um lugar inicial em x
+        # Lugar inicial em x
         self.px = 1052
-        # Sorteia um lugar inicial em y
+        # Lugar inicial em y
         self.rect.x = 1052
         self.rect.y = HEIGHT - 170          
         # Melhora a colisão estabelecendo um raio de um circulo
 #        self.radius = int(self.rect.width * 1 / 2)    
     def update(self):
-        self.rect.x += self.speedx
-        self.rect.y += self.speedy    
+        self.rect.x -= self.speedx    
 
 # Classe Mob que representa os meteoros
 class Mob2(pygame.sprite.Sprite):   
@@ -143,7 +140,30 @@ class Mob2(pygame.sprite.Sprite):
             self.rect.x = random.randrange(WIDTH - self.rect.width)
             self.rect.y = random.randrange(-100, -40)
             self.speedx = random.randrange(-3, 3)
-            self.speedy = random.randrange(2, 9)               
+            self.speedy = random.randrange(2, 9)            
+            
+class Mob3(pygame.sprite.Sprite): 
+    # Construtor da classe.
+    def __init__(self, mob3_img):      
+        # Construtor da classe pai (Sprite).
+        pygame.sprite.Sprite.__init__(self)      
+        # Diminuindo o tamanho da imagem.
+        self.image = pygame.transform.scale(mob3_img, (200, 160))                
+        # Deixando transparente.
+        self.image.set_colorkey(WHITE)       
+        # Sorteia uma velocidade inicial
+        self.speedx = random.randrange(1, 3)
+        self.speedy = 0       
+        # Detalhes sobre o posicionamento.
+        self.rect = self.image.get_rect()
+        #Lugar inicial em X
+        self.rect.x = - 40
+        # Lugar inicial em y
+        self.rect.y = HEIGHT - 170          
+        # Melhora a colisão estabelecendo um raio de um circulo
+#        self.radius = int(self.rect.width * 1 / 2)    
+    def update(self):
+        self.rect.x += self.speedx  
 
 class Bullet(pygame.sprite.Sprite):  
     # Construtor da classe.
@@ -187,6 +207,7 @@ def load_assets(img_dir):
     assets["block_img"] = pygame.image.load(path.join(img_dir, 'Dano_Ultron.png')).convert()
     assets["buraco_img"] = pygame.image.load(path.join(img_dir, 'Buraco.png')).convert()
     assets["tiro_img"] = pygame.image.load(path.join(img_dir, 'laserRed16.png')).convert()
+    assets["loki_img"] = pygame.image.load(path.join(img_dir, 'Stance_Loki.png')).convert()
     assets["score_font"] = pygame.font.Font(path.join(fnt_dir, "PressStart2P.ttf"), 28)
     return assets
 
@@ -228,6 +249,11 @@ def game_screen(screen):
         t = Mob2(assets["tiro_img"])
         all_sprites.add(t)
         mobs.add(t)
+# Cria 8 meteoros e adiciona no grupo thanos
+    for q in range(2):
+        l = Mob3(assets["loki_img"])
+        all_sprites.add(l)
+        mobs.add(l)
         
     PLAYING = 0
     DONE = 1 
