@@ -98,12 +98,8 @@ class Mob(pygame.sprite.Sprite):
         self.px = 1052
         # Lugar inicial em y
         self.rect.x = 1052
-<<<<<<< HEAD
         self.rect.y = HEIGHT - 170     
-    # Metodo que atualiza a posição do Player
-=======
-        self.rect.y = HEIGHT - 170          
->>>>>>> f3ebc6072d3d4fac722c12158c5c445b09d1ac60
+    #Método que atualiza a posição do Thanos 
     def update(self):
         self.rect.x -= self.speedx    
 
@@ -264,28 +260,17 @@ def game_screen(screen):
                 state = DONE       
          # Verifica se houve colisão entre propulsor e os inimigos
             hits = pygame.sprite.groupcollide(mobs, bullets, True, False)
-<<<<<<< HEAD
             ht = pygame.sprite.groupcollide(world_sprites, bullets, True, False)
-            for hit in hits: # Pode haver mais de um
-=======
             for hit in hits: 
->>>>>>> f3ebc6072d3d4fac722c12158c5c445b09d1ac60
-            # O meteoro e destruido dps recriado
+            # O Thanos é destruido depois recriado
                 t = Mob(assets["mob_img"])
                 all_sprites.add(t)
                 mobs.add(t)
-                l = Mob3(assets["loki_img"])
-                all_sprites.add(l)
-                mobs.add(l)
                 score += 100
-<<<<<<< HEAD
             for hit in ht: # Pode haver mais de um
             # O ultron é destruido e aumenta os pontos do player
                 score += 100
-            # Verifica se houve colisão entre o player e o meteoro ou com bola de ferro
-=======
-            # Verifica se houve colisão entre o player e os inimigos  ou com os ultrons
->>>>>>> f3ebc6072d3d4fac722c12158c5c445b09d1ac60
+            # Verifica se houve colisão entre o player e os inimigos ou com os ultrons
             hits = pygame.sprite.spritecollide(player, mobs, False)              
             ht=pygame.sprite.spritecollide(player, world_sprites, True)
             #Tira vida do Player caso haja colisão

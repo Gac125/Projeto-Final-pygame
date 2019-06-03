@@ -27,4 +27,3 @@ try:
             state = QUIT
 finally:
     pygame.quit()
-d
