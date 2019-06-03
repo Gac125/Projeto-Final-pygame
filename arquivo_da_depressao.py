@@ -7,7 +7,6 @@ from config_depressao import img_dir, fnt_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE,
 class Tile(pygame.sprite.Sprite):
     # Construtor da classe.
     def __init__(self, tile_img, x, y):
-        # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self)
         # Aumenta o tamanho do tile.
         tile_img = pygame.transform.scale(tile_img, (TILE_SIZE, TILE_SIZE))
@@ -25,7 +24,6 @@ class Tile(pygame.sprite.Sprite):
 
 class Platform(pygame.sprite.Sprite):
     def __init__(self, buraco_img):
-        # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self)
         # Aumenta o tamanho do tile.
         buraco_img = pygame.transform.scale(buraco_img, (50, 130))
@@ -43,7 +41,6 @@ class Platform(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     # Construtor da classe.
     def __init__(self, player_img):     
-        # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self) 
         # Carregando a imagem de fundo.
         self.state = STILL
@@ -62,8 +59,6 @@ class Player(pygame.sprite.Sprite):
         # Velocidade
         self.speedx = 0
         self.speedy = 0
-        # Melhora a colisão estabelecendo um raio de um circulo
-#        self.radius = 15
     def update(self):
         self.speedy += GRAVITY
         # Atualiza o estado para caindo
@@ -89,7 +84,6 @@ class Player(pygame.sprite.Sprite):
 class Mob(pygame.sprite.Sprite): 
     # Construtor da classe.
     def __init__(self, mob_img):      
-        # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self)      
         # Diminuindo o tamanho da imagem.
         self.image = pygame.transform.scale(mob_img, (200, 160))                
@@ -104,16 +98,18 @@ class Mob(pygame.sprite.Sprite):
         self.px = 1052
         # Lugar inicial em y
         self.rect.x = 1052
+<<<<<<< HEAD
         self.rect.y = HEIGHT - 170     
     # Metodo que atualiza a posição do Player
+=======
+        self.rect.y = HEIGHT - 170          
+>>>>>>> f3ebc6072d3d4fac722c12158c5c445b09d1ac60
     def update(self):
         self.rect.x -= self.speedx    
 
-# Classe Mob que representa os meteoros
 class Mob2(pygame.sprite.Sprite):   
     # Construtor da classe.
     def __init__(self, mob2_img):        
-        # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self)        
         # Diminuindo o tamanho da imagem.
         self.image = pygame.transform.scale(mob2_img, (20, 38))        
@@ -130,11 +126,11 @@ class Mob2(pygame.sprite.Sprite):
         self.speedy = random.randrange(2, 9)       
         # Melhora a colisão estabelecendo um raio de um circulo
         self.radius = int(self.rect.width * .85 / 2)       
-    # Metodo que atualiza a posição do meteoro
+    # Metodo que atualiza a posição do laser
     def update(self):
         self.rect.x += self.speedx
         self.rect.y += self.speedy        
-        # Se o meteoro passar do final da tela, volta para cima
+        # Se o laser passar do final da tela, volta para cima
         if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 20:
             self.rect.x = random.randrange(WIDTH - self.rect.width)
             self.rect.y = random.randrange(-100, -40)
@@ -144,7 +140,6 @@ class Mob2(pygame.sprite.Sprite):
 class Mob3(pygame.sprite.Sprite): 
     # Construtor da classe.
     def __init__(self, mob3_img):      
-        # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self)      
         # Diminuindo o tamanho da imagem.
         self.image = pygame.transform.scale(mob3_img, (200, 160))                
@@ -158,16 +153,13 @@ class Mob3(pygame.sprite.Sprite):
         #Lugar inicial em X
         self.rect.x = - 40
         # Lugar inicial em y
-        self.rect.y = HEIGHT - 170          
-        # Melhora a colisão estabelecendo um raio de um circulo
-#        self.radius = int(self.rect.width * 1 / 2)    
+        self.rect.y = HEIGHT - 170            
     def update(self):
         self.rect.x += self.speedx  
 
 class Bullet(pygame.sprite.Sprite):  
     # Construtor da classe.
     def __init__(self, x, y,direction, bullet_img):    
-        # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self)
         # Carregando a imagem de fundo.
         self.image = bullet_img
@@ -220,22 +212,22 @@ def game_screen(screen):
     pygame.display.set_caption("Avengers the Game")
     player = Player(assets["player_img"])
     score_font = assets["score_font"]
-# Cria um grupo de todos os sprites e adiciona a nave.
+# Cria um grupo de todos os sprites e adiciona o Homem de Ferro.
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
-# Cria um grupo do thanos
+# Cria um grupo dos inimigos
     mobs = pygame.sprite.Group()
 # Cria um grupo para tiros
     bullets = pygame.sprite.Group()
 # Cria um grupo para os buracos
     buracos = pygame.sprite.Group()
-# Cria 8 meteoros e adiciona no grupo thanos
+# Cria 1 thanos e adiciona no grupo dos inimigos
     for i in range(1):
         m = Mob(assets["mob_img"])
         all_sprites.add(m)
         mobs.add(m)
     world_sprites = pygame.sprite.Group() 
-    # Cria blocos espalhados em posições aleatórias do mapa
+    # Cria ultrons espalhados em posições aleatórias do mapa
     for i in range(INITIAL_BLOCKS):
         block_x = random.randint(0, WIDTH)
         block_y = random.randint(0, int(HEIGHT * 0.25))
@@ -243,12 +235,12 @@ def game_screen(screen):
         world_sprites.add(block)
         # Adiciona tambem no grupo de todos os sprites para serem atualizados e desenhados
         all_sprites.add(block)
-# Cria 8 meteoros e adiciona no grupo thanos
+# Cria 5 lasers e adiciona no grupo dos inimigos
     for a in range(5):
         t = Mob2(assets["tiro_img"])
         all_sprites.add(t)
         mobs.add(t)
-# Cria 8 meteoros e adiciona no grupo thanos
+# Cria 2 lokis e adiciona no grupo dos inimigos
     for q in range(2):
         l = Mob3(assets["loki_img"])
         all_sprites.add(l)
@@ -270,19 +262,30 @@ def game_screen(screen):
             # Verifica se foi fechado.
             if event.type == pygame.QUIT:
                 state = DONE       
-         # Verifica se houve colisão entre propulsor e o meteoro
+         # Verifica se houve colisão entre propulsor e os inimigos
             hits = pygame.sprite.groupcollide(mobs, bullets, True, False)
+<<<<<<< HEAD
             ht = pygame.sprite.groupcollide(world_sprites, bullets, True, False)
             for hit in hits: # Pode haver mais de um
+=======
+            for hit in hits: 
+>>>>>>> f3ebc6072d3d4fac722c12158c5c445b09d1ac60
             # O meteoro e destruido dps recriado
-                m = Mob(assets["mob_img"])
-                all_sprites.add(m)
-                mobs.add(m)
+                t = Mob(assets["mob_img"])
+                all_sprites.add(t)
+                mobs.add(t)
+                l = Mob3(assets["loki_img"])
+                all_sprites.add(l)
+                mobs.add(l)
                 score += 100
+<<<<<<< HEAD
             for hit in ht: # Pode haver mais de um
             # O ultron é destruido e aumenta os pontos do player
                 score += 100
             # Verifica se houve colisão entre o player e o meteoro ou com bola de ferro
+=======
+            # Verifica se houve colisão entre o player e os inimigos  ou com os ultrons
+>>>>>>> f3ebc6072d3d4fac722c12158c5c445b09d1ac60
             hits = pygame.sprite.spritecollide(player, mobs, False)              
             ht=pygame.sprite.spritecollide(player, world_sprites, True)
             #Tira vida do Player caso haja colisão
@@ -351,7 +354,7 @@ def game_screen(screen):
             background_rect.x -= background_rect.width      
         for block in world_sprites:
             if block.rect.right < 0:
-                # Destrói o bloco e cria um novo no final da tela
+                # Destrói o ultron e cria um novo no final da tela
                 block.kill()
                 block_x = random.randint(WIDTH, int(WIDTH * 1.5))
                 block_y = random.randint(0, int(HEIGHT * 0.75))
@@ -367,10 +370,10 @@ def game_screen(screen):
         # Desenhamos a imagem novamente, mas deslocada em x.
         background_rect2 = background_rect.copy()
         if background_rect.left > 0:
-            # Precisamos desenhar o fundo à esquerda
+            # Desenha o fundo à esquerda
             background_rect2.x -= background_rect2.width
         else:
-            # Precisamos desenhar o fundo à direita
+            # Desenha o fundo à direita
             background_rect2.x += background_rect2.width
             
         screen.blit(background, background_rect2)

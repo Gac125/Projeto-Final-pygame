@@ -5,7 +5,7 @@ from init_avengers import init_avengers
 from arquivo_da_depressao import game_screen
  
 
-# Inicialização do Pygame.
+# dawInicialização do Pygame.
 pygame.init()
 pygame.mixer.init()
 
@@ -27,3 +27,4 @@ try:
             state = QUIT
 finally:
     pygame.quit()
+d
