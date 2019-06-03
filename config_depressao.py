@@ -33,7 +33,7 @@ SPEED_Y = -5
 # Define a aceleração da gravidade
 GRAVITY = 2
 # Define a velocidade inicial no pulo
-JUMP_SIZE = 30
+JUMP_SIZE = 50
 # Define a altura do chão
 GROUND = HEIGHT * 6.2 // 6
 

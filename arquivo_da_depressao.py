@@ -28,7 +28,7 @@ class Platform(pygame.sprite.Sprite):
         # Construtor da classe pai (Sprite).
         pygame.sprite.Sprite.__init__(self)
         # Aumenta o tamanho do tile.
-        buraco_img = pygame.transform.scale(buraco_img, (150, 130))
+        buraco_img = pygame.transform.scale(buraco_img, (50, 130))
         # Define a imagem do tile.
         self.image = buraco_img
         # Detalhes sobre o posicionamento.
@@ -104,9 +104,8 @@ class Mob(pygame.sprite.Sprite):
         self.px = 1052
         # Lugar inicial em y
         self.rect.x = 1052
-        self.rect.y = HEIGHT - 170          
-        # Melhora a colisão estabelecendo um raio de um circulo
-#        self.radius = int(self.rect.width * 1 / 2)    
+        self.rect.y = HEIGHT - 170     
+    # Metodo que atualiza a posição do Player
     def update(self):
         self.rect.x -= self.speedx    
 
@@ -259,6 +258,7 @@ def game_screen(screen):
     DONE = 1 
     score = 0
     lives = 3
+    
     #Define estado atual
     state = PLAYING
     #Começa a contar o tempo
@@ -272,19 +272,22 @@ def game_screen(screen):
                 state = DONE       
          # Verifica se houve colisão entre propulsor e o meteoro
             hits = pygame.sprite.groupcollide(mobs, bullets, True, False)
+            ht = pygame.sprite.groupcollide(world_sprites, bullets, True, False)
             for hit in hits: # Pode haver mais de um
             # O meteoro e destruido dps recriado
                 m = Mob(assets["mob_img"])
                 all_sprites.add(m)
                 mobs.add(m)
                 score += 100
+            for hit in ht: # Pode haver mais de um
+            # O ultron é destruido e aumenta os pontos do player
+                score += 100
             # Verifica se houve colisão entre o player e o meteoro ou com bola de ferro
             hits = pygame.sprite.spritecollide(player, mobs, False)              
             ht=pygame.sprite.spritecollide(player, world_sprites, True)
             #Tira vida do Player caso haja colisão
             if hits or ht:
-                lives -= 1  
-                print("perdeu vida {0}".format(lives))
+                lives -= 1                  
             if lives == 0:
                 state = DONE
             # Verifica se apertou alguma tecla.
