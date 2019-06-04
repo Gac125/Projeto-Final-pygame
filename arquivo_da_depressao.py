@@ -279,6 +279,14 @@ def game_screen(screen):
             for hit in ht: # Pode haver mais de um
             # O ultron é destruido e aumenta os pontos do player
                 score += 100
+                destroi_mobsnd.play()
+                u = Tile(assets["block_img"], block_x, block_y)
+                all_sprites.add(u)
+                world_sprites.add(u)
+#                u2 = Tile(assets["block_img"], block_y, block_x)
+#                all_sprites.add(u2)
+#                world_sprites.add(u2)
+                score += 100
             # Verifica se houve colisão entre o player e os inimigos ou com os ultrons
             hits = pygame.sprite.spritecollide(player, mobs, False)              
             ht=pygame.sprite.spritecollide(player, world_sprites, True)
