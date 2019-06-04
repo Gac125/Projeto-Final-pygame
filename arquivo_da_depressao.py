@@ -2,7 +2,7 @@
 import pygame
 import random
 from os import path
-from config_depressao import img_dir, fnt_dir, snd_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING, FALLING_BURACO
+from config_depressao import img_dir, fnt_dir, snd_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING
 
 class Tile(pygame.sprite.Sprite):
     # Construtor da classe.
@@ -26,13 +26,13 @@ class Platform(pygame.sprite.Sprite):
     def __init__(self, buraco_img):
         pygame.sprite.Sprite.__init__(self)
         # Aumenta o tamanho do tile.
-        buraco_img = pygame.transform.scale(buraco_img, (50, 130))
+        buraco_img = pygame.transform.scale(buraco_img, (80, 130))
         # Define a imagem do tile.
         self.image = buraco_img
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
-        # Posiciona o tile
-        self.rect.x = 800
+        # Posiciona o buraco
+        self.rect.x = 1000
         self.rect.y = HEIGHT - 50
         self.speedx = 0    
     def update(self):
@@ -62,18 +62,17 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.speedy += GRAVITY
         # Atualiza o estado para caindo
-        if self.speedy > 0 and self.state!= FALLING_BURACO:
+        if self.speedy > 0:
             self.state = FALLING
         self.rect.y += self.speedy
-        if self.state != FALLING_BURACO:
-            # Se bater no chão, para de cair
-            if self.rect.bottom > GROUND:
-                # Reposiciona para a posição do chão
-                self.rect.bottom = GROUND
-                # Para de cair
-                self.speedy = 0
-                # Atualiza o estado para parado
-                self.state = STILL
+        # Se bater no chão, para de cair
+        if self.rect.bottom > GROUND:
+            # Reposiciona para a posição do chão
+            self.rect.bottom = GROUND
+            # Para de cair
+            self.speedy = 0
+            # Atualiza o estado para parado
+            self.state = STILL
     # Método que faz o personagem pular
     def jump(self):
         # Só pode pular se ainda não estiver pulando ou caindo
@@ -147,7 +146,7 @@ class Mob3(pygame.sprite.Sprite):
         # Detalhes sobre o posicionamento.
         self.rect = self.image.get_rect()
         #Lugar inicial em X
-        self.rect.x = - 40
+        self.rect.x = - 150
         # Lugar inicial em y
         self.rect.y = HEIGHT - 170            
     def update(self):
@@ -214,8 +213,12 @@ def game_screen(screen):
 # Cria um grupo de todos os sprites e adiciona o Homem de Ferro.
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
-# Cria um grupo dos inimigos
+# Cria um grupo do Thanos
     mobs = pygame.sprite.Group()
+# Cria um grupo dos lazaer
+    lazer = pygame.sprite.Group()    
+# Cria um grupo do Loki
+    loki = pygame.sprite.Group()
 # Cria um grupo para tiros
     bullets = pygame.sprite.Group()
 # Cria um grupo para os buracos
@@ -231,34 +234,35 @@ def game_screen(screen):
         all_sprites.add(m)
         mobs.add(m)
     world_sprites = pygame.sprite.Group() 
-    # Cria ultrons espalhados em posições aleatórias do mapa
+# Cria ultrons espalhados em posições aleatórias do mapa
     for i in range(INITIAL_BLOCKS):
         block_x = random.randint(0, WIDTH)
         block_y = random.randint(0, int(HEIGHT * 0.25))
         block = Tile(assets["block_img"], block_x, block_y)
         world_sprites.add(block)
-        # Adiciona tambem no grupo de todos os sprites para serem atualizados e desenhados
+# Adiciona tambem no grupo de todos os sprites para serem atualizados e desenhados
         all_sprites.add(block)
 # Cria 5 lasers e adiciona no grupo dos inimigos
     for a in range(5):
         t = Mob2(assets["tiro_img"])
         all_sprites.add(t)
-        mobs.add(t)
+        lazer.add(t)
 # Cria 2 lokis e adiciona no grupo dos inimigos
-    for q in range(2):
+    for q in range(1):
         l = Mob3(assets["loki_img"])
         all_sprites.add(l)
-        mobs.add(l)
+        loki.add(l)
         
     # Define os estados possíveis do jogo       
     PLAYING = 0
     DONE = 1 
     score = 0
     lives = 3   
+    
     # Define estado atual
     state = PLAYING
     # Começa a contar o tempo
-    tempo = pygame.time.get_ticks()
+    tempo1 = pygame.time.get_ticks()
     while state != DONE:      
         # Ajusta a velocidade do jogo.
         clock.tick(FPS)
@@ -269,6 +273,8 @@ def game_screen(screen):
          # Verifica se houve colisão entre propulsor e os inimigos
             hits = pygame.sprite.groupcollide(mobs, bullets, True, False)
             ht = pygame.sprite.groupcollide(world_sprites, bullets, True, False)
+            hits2 = pygame.sprite.groupcollide(lazer, bullets, True, False)
+            hits3 = pygame.sprite.groupcollide(loki, bullets, True, False)
             for hit in hits: 
             # O Thanos é destruido depois recriado
                 destroi_mobsnd.play()
@@ -277,23 +283,45 @@ def game_screen(screen):
                 mobs.add(t)
                 score += 100
             for hit in ht: # Pode haver mais de um
-            # O ultron é destruido e aumenta os pontos do player
+            # O ultron é destruido e depois recriado
                 score += 100
                 destroi_mobsnd.play()
                 u = Tile(assets["block_img"], block_x, block_y)
                 all_sprites.add(u)
                 world_sprites.add(u)
-#                u2 = Tile(assets["block_img"], block_y, block_x)
-#                all_sprites.add(u2)
-#                world_sprites.add(u2)
+                score += 100
+            for hit in hits2: 
+            # O Lazer é destruido depois recriado
+                destroi_mobsnd.play()
+                lz = Mob2(assets["tiro_img"])
+                all_sprites.add(lz)
+                lazer.add(lz)
+                score += 100
+            for hit in hits3: 
+            # O Loki é destruido depois recriado
+                destroi_mobsnd.play()
+                lk = Mob3(assets["loki_img"])
+                all_sprites.add(lk)
+                loki.add(lk)
                 score += 100
             # Verifica se houve colisão entre o player e os inimigos ou com os ultrons
-            hits = pygame.sprite.spritecollide(player, mobs, False)              
+            hits = pygame.sprite.spritecollide(player, mobs, False)   
+            hits2 = pygame.sprite.spritecollide(player, lazer, False) 
+            hits3 = pygame.sprite.spritecollide(player, loki, False) 
             ht=pygame.sprite.spritecollide(player, world_sprites, True)
             #Tira vida do Player caso haja colisão
-            if hits or ht:
+            if hits:
                 tira_vidasnd.play()
-                lives -= 1                  
+                lives -= 1       
+            if hits2:
+                tira_vidasnd.play()
+                lives -= 1      
+            if hits3:
+                tira_vidasnd.play()
+                lives -= 1      
+            if ht: 
+                tira_vidasnd.play()
+                lives -= 1      
             if lives == 0:
                 state = DONE
             # Verifica se apertou alguma tecla.
@@ -333,18 +361,15 @@ def game_screen(screen):
             block.speedx = -player.speedx        
         now=pygame.time.get_ticks()
         #Faz os buracos aparecerem a cada 7 segundos
-        if now - tempo > 7000:
+        if now - tempo1 > 7000:
             buraco=Platform(assets["buraco_img"])
             all_sprites.add(buraco)
             buracos.add(buraco)
-            tempo=pygame.time.get_ticks()
+            tempo1=pygame.time.get_ticks()
         #Verifica colisão com o buraco    
         caiu=pygame.sprite.spritecollide(player, buracos, False, pygame.sprite.collide_rect)
         if caiu:
-            player.state = FALLING_BURACO
-            delay = pygame.time.get_ticks()
-            if delay >= 2000:            
-                state = DONE
+            state = DONE
         # Atualiza a acao de cad a sprite. O grupo chama o método update() de cada Sprite dentre dele.
         all_sprites.update()
         # Atualiza a posição da imagem de fundo.

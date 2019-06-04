@@ -24,6 +24,6 @@ try:
         elif state == GAME:
             state = game_screen(screen)
         else:
-            state = QUIT
+             state = QUIT
 finally:
     pygame.quit()
