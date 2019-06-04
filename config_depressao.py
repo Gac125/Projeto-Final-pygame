@@ -3,8 +3,8 @@ from os import path
 
 #Dados do jogo 
 img_dir = path.join(path.dirname(__file__), 'Avengers anime')
-snd_dir = path.join(path.dirname(__file__), 'snd')
 fnt_dir = path.join(path.dirname(__file__), 'Avengers anime')
+snd_dir = path.join(path.dirname(__file__), 'Sons')
 
 WIDTH = 1052 # Largura da tela
 HEIGHT = 650 # Altura da tela

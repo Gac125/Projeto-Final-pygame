@@ -2,7 +2,7 @@
 import pygame
 import random
 from os import path
-from config_depressao import img_dir, fnt_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING, FALLING_BURACO
+from config_depressao import img_dir, fnt_dir, snd_dir, WIDTH, HEIGHT, BLACK, FPS, WHITE, RED, YELLOW, INITIAL_BLOCKS, TILE_SIZE, SPEED_X, SPEED_Y, GRAVITY, JUMP_SIZE, GROUND, STILL, JUMPING, FALLING, FALLING_BURACO
 
 class Tile(pygame.sprite.Sprite):
     # Construtor da classe.
@@ -196,6 +196,9 @@ def load_assets(img_dir):
     assets["tiro_img"] = pygame.image.load(path.join(img_dir, 'laserRed16.png')).convert()
     assets["loki_img"] = pygame.image.load(path.join(img_dir, 'Stance_Loki.png')).convert()
     assets["score_font"] = pygame.font.Font(path.join(fnt_dir, "PressStart2P.ttf"), 28)
+    assets["tira_vida"] = pygame.mixer.Sound(path.join(snd_dir, 'expl3.wav'))
+    assets["destroi_mob"] = pygame.mixer.Sound(path.join(snd_dir, 'expl6.wav'))
+    assets["tiro_sound"] = pygame.mixer.Sound(path.join(snd_dir, 'pew.wav'))
     return assets
 
 
@@ -217,6 +220,11 @@ def game_screen(screen):
     bullets = pygame.sprite.Group()
 # Cria um grupo para os buracos
     buracos = pygame.sprite.Group()
+# Carrega os sons do jogo
+    pygame.mixer.music.set_volume(0.4)
+    tira_vidasnd = assets["tira_vida"]
+    destroi_mobsnd = assets["destroi_mob"]
+    tiro_snd = assets["tiro_sound"]
 # Cria 1 thanos e adiciona no grupo dos inimigos
     for i in range(1):
         m = Mob(assets["mob_img"])
@@ -242,14 +250,14 @@ def game_screen(screen):
         all_sprites.add(l)
         mobs.add(l)
         
+    # Define os estados possíveis do jogo       
     PLAYING = 0
     DONE = 1 
     score = 0
-    lives = 3
-    
-    #Define estado atual
+    lives = 3   
+    # Define estado atual
     state = PLAYING
-    #Começa a contar o tempo
+    # Começa a contar o tempo
     tempo = pygame.time.get_ticks()
     while state != DONE:      
         # Ajusta a velocidade do jogo.
@@ -263,6 +271,7 @@ def game_screen(screen):
             ht = pygame.sprite.groupcollide(world_sprites, bullets, True, False)
             for hit in hits: 
             # O Thanos é destruido depois recriado
+                destroi_mobsnd.play()
                 t = Mob(assets["mob_img"])
                 all_sprites.add(t)
                 mobs.add(t)
@@ -275,6 +284,7 @@ def game_screen(screen):
             ht=pygame.sprite.spritecollide(player, world_sprites, True)
             #Tira vida do Player caso haja colisão
             if hits or ht:
+                tira_vidasnd.play()
                 lives -= 1                  
             if lives == 0:
                 state = DONE
@@ -289,15 +299,18 @@ def game_screen(screen):
                 elif event.key == ord('d'):
                     bullet = Bullet(player.rect.centerx, player.rect.top,2,assets["bullet_img1"])
                     all_sprites.add(bullet)
-                    bullets.add(bullet)      
+                    bullets.add(bullet)  
+                    tiro_snd.play()
                 elif event.key == ord('w'):
                     bullet = Bullet(player.rect.centerx, player.rect.top,1,assets["bullet_img3"])
                     all_sprites.add(bullet)
-                    bullets.add(bullet)          
+                    bullets.add(bullet)    
+                    tiro_snd.play()
                 elif event.key == ord('a'):
                     bullet = Bullet(player.rect.centerx, player.rect.top,0,assets["bullet_img2"])
                     all_sprites.add(bullet)
-                    bullets.add(bullet)          
+                    bullets.add(bullet) 
+                    tiro_snd.play()
                 elif event.key == pygame.K_LEFT:
                     player.speedx += SPEED_X
                 elif event.key == pygame.K_RIGHT:
